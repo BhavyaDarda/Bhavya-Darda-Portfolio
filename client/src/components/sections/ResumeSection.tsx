@@ -65,16 +65,18 @@ const ResumeSection: React.FC = () => {
           </div>
           
           <div className="w-full md:w-1/2 resume-preview">
-            <Neomorphism className="rounded-xl p-4 relative overflow-hidden">
-              <div className="w-full aspect-[3/4] relative">
-                <object
-                  data="/resume.pdf"
-                  type="application/pdf"
-                  className="absolute inset-0 w-full h-full rounded-lg bg-background"
-                  style={{ minHeight: '600px' }}
-                >
-                  <embed src="/resume.pdf" type="application/pdf" />
-                </object>
+            <Neomorphism className="rounded-xl p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
+              <div className="w-full aspect-[3/4] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300">
+                <iframe
+                  src="/resume.pdf"
+                  className="absolute inset-0 w-full h-full rounded-lg bg-background border border-zinc-800/50"
+                  style={{ 
+                    minHeight: '600px',
+                    WebkitBackfaceVisibility: 'hidden',
+                    MozBackfaceVisibility: 'hidden',
+                    backfaceVisibility: 'hidden'
+                  }}
+                />
               </div>
             </Neomorphism>
           </div>
