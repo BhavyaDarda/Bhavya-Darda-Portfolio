@@ -17,33 +17,33 @@ import {
 } from 'lucide-react';
 import { useThemeStore } from '../../lib/theme';
 
-// Using embedded base64 audio for reliable playback without external dependencies
-// These are very short loops to minimize size while ensuring reliable playback
+// Using WAV format for better browser compatibility
+// Creating real music tracks using the Web Audio API on-the-fly instead of relying on external resources
 const musicTracks = [
   {
     id: 'gold',
     name: 'Luxury Gold',
-    // Silent 1-second audio in base64 to prevent errors
-    url: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
-    fallbackUrl: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
+    // We'll generate this audio programmatically
+    url: 'gold',
+    fallbackUrl: 'gold',
     theme: 'gold',
     mood: 'elegant'
   },
   {
     id: 'emerald',
     name: 'Emerald Ambience',
-    // Silent 1-second audio in base64 to prevent errors
-    url: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
-    fallbackUrl: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
+    // We'll generate this audio programmatically
+    url: 'emerald',
+    fallbackUrl: 'emerald',
     theme: 'emerald',
     mood: 'calm'
   },
   {
     id: 'platinum',
     name: 'Platinum Noir',
-    // Silent 1-second audio in base64 to prevent errors
-    url: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
-    fallbackUrl: 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGlicm9zcXVlIFNvdW5kIFN0dWRpbwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTguMTYuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV',
+    // We'll generate this audio programmatically
+    url: 'platinum',
+    fallbackUrl: 'platinum',
     theme: 'platinum',
     mood: 'mysterious'
   }
@@ -121,11 +121,210 @@ const MusicPlayer = () => {
     }
   }, [currentTheme, currentTrackIndex]);
 
-  // Create a track loading function that uses fallback if primary fails
-  const createTrack = useCallback((primaryUrl: string, fallbackUrl: string) => {
-    setMusicState(prev => ({ ...prev, isLoading: true, isError: false }));
+  // Generate audio data programmatically based on theme
+  const generateAudioForTheme = (theme: string): ArrayBuffer => {
+    // Create audio context
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AudioContext();
+    const sampleRate = audioCtx.sampleRate;
+    const duration = 10; // 10 seconds of audio
     
-    const trackUrl = useFallback ? fallbackUrl : primaryUrl;
+    // Create buffer for our audio data
+    const buffer = audioCtx.createBuffer(2, duration * sampleRate, sampleRate);
+    const leftChannel = buffer.getChannelData(0);
+    const rightChannel = buffer.getChannelData(1);
+    
+    // Generate different patterns based on theme
+    switch (theme) {
+      case 'gold':
+        // Luxury gold theme - warm, rich harmonics
+        for (let i = 0; i < buffer.length; i++) {
+          const t = i / sampleRate;
+          // Rich harmonics with subtle modulation
+          const mainFreq = 220 + Math.sin(t * 0.1) * 5;
+          const harmonic1 = Math.sin(t * mainFreq) * 0.3;
+          const harmonic2 = Math.sin(t * mainFreq * 1.5) * 0.2;
+          const harmonic3 = Math.sin(t * mainFreq * 2) * 0.1;
+          const harmonic4 = Math.sin(t * mainFreq * 3) * 0.05;
+          
+          // Combine harmonics with envelope
+          const envelope = 0.2 - 0.1 * Math.cos(t * 0.25);
+          const signal = (harmonic1 + harmonic2 + harmonic3 + harmonic4) * envelope;
+          
+          // Add stereo effect
+          leftChannel[i] = signal * (0.95 + Math.sin(t * 0.4) * 0.05);
+          rightChannel[i] = signal * (0.95 + Math.sin(t * 0.4 + 0.2) * 0.05);
+        }
+        break;
+        
+      case 'emerald':
+        // Calming emerald theme - gentle, natural sounds
+        for (let i = 0; i < buffer.length; i++) {
+          const t = i / sampleRate;
+          
+          // Nature-inspired gentle tones
+          const baseFreq = 196 + Math.sin(t * 0.05) * 3;
+          const chord1 = Math.sin(t * baseFreq) * 0.2;
+          const chord2 = Math.sin(t * baseFreq * 1.25) * 0.15;
+          const chord3 = Math.sin(t * baseFreq * 1.5) * 0.1;
+          
+          // Ambient texture
+          const noise = (Math.random() * 2 - 1) * 0.03;
+          
+          // Water-like effect
+          const water = Math.sin(t * 2 + Math.sin(t * 4) * 2) * 0.05;
+          
+          // Combine elements with gentle pulsing
+          const envelope = 0.15 + 0.05 * Math.sin(t * 0.2);
+          const signal = (chord1 + chord2 + chord3 + water + noise) * envelope;
+          
+          // Stereo field
+          leftChannel[i] = signal * (1 + Math.sin(t * 0.2) * 0.1);
+          rightChannel[i] = signal * (1 + Math.sin(t * 0.2 + 0.5) * 0.1);
+        }
+        break;
+        
+      case 'platinum':
+      default:
+        // Mysterious platinum theme - dark, textural ambience
+        for (let i = 0; i < buffer.length; i++) {
+          const t = i / sampleRate;
+          
+          // Dark pad sounds
+          const baseFreq = 146 + Math.sin(t * 0.15) * 4;
+          const pad1 = Math.sin(t * baseFreq) * 0.15;
+          const pad2 = Math.sin(t * baseFreq * 2) * 0.1;
+          
+          // Textural elements
+          const texture = Math.sin(t * 7.5 + Math.sin(t) * 2) * 0.1;
+          const noise = (Math.random() * 2 - 1) * 0.05;
+          
+          // Slow swells
+          const swell = 0.2 + 0.1 * Math.sin(t * 0.1);
+          const signal = (pad1 + pad2 + texture + noise) * swell;
+          
+          // Wide stereo field
+          leftChannel[i] = signal * (1 + Math.sin(t * 0.3) * 0.3);
+          rightChannel[i] = signal * (1 + Math.sin(t * 0.3 + 1) * 0.3);
+        }
+        break;
+    }
+    
+    // Convert buffer to WAV format
+    const encoder = new WavEncoder({
+      sampleRate: sampleRate,
+      channelCount: 2
+    });
+    
+    // Add the audio data to the encoder
+    encoder.addSamples(leftChannel, rightChannel);
+    
+    // Get the WAV file as an ArrayBuffer
+    return encoder.getWavFile();
+  };
+  
+  // WAV Encoder utility (minimal implementation)
+  class WavEncoder {
+    private sampleRate: number;
+    private channelCount: number;
+    private leftSamples: Float32Array | null = null;
+    private rightSamples: Float32Array | null = null;
+    
+    constructor(options: { sampleRate: number; channelCount: number }) {
+      this.sampleRate = options.sampleRate;
+      this.channelCount = options.channelCount;
+    }
+    
+    addSamples(leftChannel: Float32Array, rightChannel: Float32Array) {
+      this.leftSamples = leftChannel;
+      this.rightSamples = rightChannel;
+    }
+    
+    getWavFile(): ArrayBuffer {
+      if (!this.leftSamples || !this.rightSamples) {
+        throw new Error('No samples added');
+      }
+      
+      const length = this.leftSamples.length;
+      const buffer = new ArrayBuffer(44 + length * this.channelCount * 2);
+      const view = new DataView(buffer);
+      
+      // Write WAV header
+      // "RIFF" chunk descriptor
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 36 + length * this.channelCount * 2, true);
+      writeString(view, 8, 'WAVE');
+      
+      // "fmt " sub-chunk
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true); // fmt chunk size
+      view.setUint16(20, 1, true); // audio format (1 = PCM)
+      view.setUint16(22, this.channelCount, true);
+      view.setUint32(24, this.sampleRate, true);
+      view.setUint32(28, this.sampleRate * this.channelCount * 2, true); // byte rate
+      view.setUint16(32, this.channelCount * 2, true); // block align
+      view.setUint16(34, 16, true); // bits per sample
+      
+      // "data" sub-chunk
+      writeString(view, 36, 'data');
+      view.setUint32(40, length * this.channelCount * 2, true);
+      
+      // Write interleaved audio data
+      const offset = 44;
+      for (let i = 0; i < length; i++) {
+        // Convert float to 16-bit PCM
+        const left = Math.max(-1, Math.min(1, this.leftSamples[i]));
+        const right = Math.max(-1, Math.min(1, this.rightSamples[i]));
+        view.setInt16(offset + (i * 4), left * 0x7FFF, true);
+        view.setInt16(offset + (i * 4) + 2, right * 0x7FFF, true);
+      }
+      
+      return buffer;
+    }
+  }
+  
+  // Utility to write strings to DataView
+  function writeString(view: DataView, offset: number, string: string) {
+    for (let i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  }
+
+  // Create audio blob URL from generated audio data
+  const createAudioBlobUrl = (theme: string): string => {
+    try {
+      const audioData = generateAudioForTheme(theme);
+      const blob = new Blob([audioData], { type: 'audio/wav' });
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error('Error generating audio:', error);
+      // Create a silent audio as fallback
+      const silentBuffer = new ArrayBuffer(44);
+      const view = new DataView(silentBuffer);
+      
+      // Basic WAV header for silence
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 36, true);
+      writeString(view, 8, 'WAVE');
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 2, true);
+      view.setUint32(24, 44100, true);
+      view.setUint32(28, 44100 * 2 * 2, true);
+      view.setUint16(32, 4, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, 'data');
+      view.setUint32(40, 0, true);
+      
+      const blob = new Blob([silentBuffer], { type: 'audio/wav' });
+      return URL.createObjectURL(blob);
+    }
+  };
+
+  // Create a track loading function
+  const createTrack = useCallback((themeId: string, _fallbackUrl: string) => {
+    setMusicState(prev => ({ ...prev, isLoading: true, isError: false }));
     
     if (soundRef.current) {
       soundRef.current.unload();
@@ -134,9 +333,12 @@ const MusicPlayer = () => {
     if (seekInterval.current) {
       clearInterval(seekInterval.current as unknown as number);
     }
-
+    
+    // Generate audio for this theme
+    const audioUrl = createAudioBlobUrl(themeId);
+    
     soundRef.current = new Howl({
-      src: [trackUrl],
+      src: [audioUrl],
       html5: true,
       volume: muted ? 0 : volume,
       loop: true,
@@ -175,33 +377,20 @@ const MusicPlayer = () => {
       },
       
       // Error handlers
-      onloaderror: (_, error) => {
-        console.error("Music load error:", error);
+      onloaderror: (id, error) => {
+        console.error("Music load error:", id, error);
         setMusicState(prev => ({ ...prev, isLoading: false, isError: true }));
-        
-        // Try fallback URL if we haven't already
-        if (!useFallback) {
-          console.log("Trying fallback URL...");
-          setUseFallback(true);
-          createTrack(primaryUrl, fallbackUrl);
-        }
       },
       
-      onplayerror: (_, error) => {
-        console.error("Music play error:", error);
+      onplayerror: (id, error) => {
+        console.error("Music play error:", id, error);
         setIsPlaying(false);
         setMusicState(prev => ({ ...prev, isError: true }));
-        
-        // Try fallback URL if we haven't already
-        if (!useFallback) {
-          setUseFallback(true);
-          createTrack(primaryUrl, fallbackUrl);
-        }
       }
     });
 
     return soundRef.current;
-  }, [useFallback, volume, muted, isPlaying]);
+  }, [volume, muted, isPlaying]);
 
   // Load new track when current track changes
   useEffect(() => {

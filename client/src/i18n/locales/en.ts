@@ -8,7 +8,8 @@ export default {
     "experience": "Experience",
     "achievements": "Achievements",
     "resume": "Resume",
-    "contact": "Contact"
+    "contact": "Contact",
+    "scroll_down": "SCROLL DOWN"
   },
   // Hero section
   "hero": {

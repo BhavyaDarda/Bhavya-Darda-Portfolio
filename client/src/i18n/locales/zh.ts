@@ -8,7 +8,8 @@ export default {
     "experience": "经验",
     "achievements": "成就",
     "resume": "简历",
-    "contact": "联系"
+    "contact": "联系",
+    "scroll_down": "向下滚动"
   },
   // Hero section
   "hero": {

@@ -3,10 +3,12 @@ import { useMagnetic } from '../../hooks/use-magnetic';
 import { aboutInfo } from '../../data/portfolioData';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
+import { useTranslation } from 'react-i18next';
 
 const HeroSection: React.FC = () => {
   const exploreBtnRef = useMagnetic<HTMLAnchorElement>();
   const contactBtnRef = useMagnetic<HTMLAnchorElement>();
+  const { t } = useTranslation();
   
   useEffect(() => {
     // GSAP animations
@@ -64,7 +66,7 @@ const HeroSection: React.FC = () => {
             animate={{ opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            {aboutInfo.title}
+            {t('hero.greeting')}
           </motion.p>
           
           <h1 className="hero-title relative text-4xl md:text-6xl lg:text-7xl font-outfit font-bold mb-6">
@@ -73,7 +75,9 @@ const HeroSection: React.FC = () => {
           </h1>
           
           <p className="hero-description max-w-2xl text-base sm:text-lg opacity-80 mb-10">
-            Crafting exceptional digital experiences through innovative development and intelligent design
+            <span>{t('hero.title')}</span>
+            <br />
+            <span className="opacity-75 text-sm">{t('hero.subtitle')}</span>
           </p>
           
           <div className="hero-buttons flex flex-wrap justify-center gap-4">
@@ -82,7 +86,7 @@ const HeroSection: React.FC = () => {
               ref={exploreBtnRef}
               className="relative glassmorphism px-6 py-3 rounded-full text-sm font-medium group hover:bg-primary hover:text-primary-foreground transition-all duration-300"
             >
-              <span className="relative z-10">EXPLORE MY WORK</span>
+              <span className="relative z-10">{t('hero.cta')}</span>
               <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary-light opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-[1]"></span>
             </a>
             
@@ -91,7 +95,7 @@ const HeroSection: React.FC = () => {
               ref={contactBtnRef}
               className="relative neomorphism px-6 py-3 rounded-full text-sm font-medium group hover:text-primary transition-all duration-300"
             >
-              <span className="relative z-10">GET IN TOUCH</span>
+              <span className="relative z-10">{t('contact.title')}</span>
             </a>
           </div>
         </div>
@@ -99,7 +103,7 @@ const HeroSection: React.FC = () => {
       
       <div className="scroll-indicator absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <a href="#about" className="flex flex-col items-center text-sm opacity-60 hover:opacity-100 transition-opacity">
-          <span className="mb-2">SCROLL DOWN</span>
+          <span className="mb-2">{t('nav.scroll_down')}</span>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 animate-bounce">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
