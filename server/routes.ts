@@ -6,7 +6,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve PDF with correct headers
   app.get('/resume.pdf', (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename=resume.pdf');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.sendFile('public/resume.pdf', { root: 'client' });
   });
 
