@@ -27,7 +27,6 @@ import Footer from "./components/sections/Footer";
 import LanguageSwitcher from "./components/features/LanguageSwitcher";
 import AIChatbot from "./components/features/AIChatbot";
 import MusicPlayer from "./components/features/MusicPlayer";
-import LiveVisitors from "./components/features/LiveVisitors";
 
 // Pages
 import NotFound from "./pages/not-found";
@@ -95,7 +94,6 @@ function App() {
               {/* Features */}
               <AIChatbot />
               <MusicPlayer />
-              <LiveVisitors />
             </div>
           )}
           <Toaster />
