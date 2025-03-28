@@ -67,12 +67,14 @@ const ResumeSection: React.FC = () => {
           <div className="w-full md:w-1/2 resume-preview">
             <Neomorphism className="rounded-xl p-4 relative overflow-hidden">
               <div className="w-full aspect-[3/4] relative">
-                <iframe
-                  src={`https://docs.google.com/gview?url=${window.location.origin}/resume.pdf&embedded=true`}
+                <object
+                  data="/resume.pdf"
+                  type="application/pdf"
                   className="absolute inset-0 w-full h-full rounded-lg bg-background"
                   style={{ minHeight: '600px' }}
-                  frameBorder="0"
-                ></iframe>
+                >
+                  <embed src="/resume.pdf" type="application/pdf" />
+                </object>
               </div>
             </Neomorphism>
           </div>

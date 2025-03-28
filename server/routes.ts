@@ -1,17 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import path from 'path';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve PDF with correct headers
   app.get('/resume.pdf', (req, res) => {
+    const pdfPath = path.join(__dirname, '../client/public/resume.pdf');
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Content-Disposition', 'inline; filename="resume.pdf"');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('X-Frame-Options', 'ALLOWALL');
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.sendFile('public/resume.pdf', { root: 'client' });
+    res.sendFile(pdfPath);
   });
 
   const httpServer = createServer(app);
