@@ -67,8 +67,8 @@ const ResumeSection: React.FC = () => {
           <div className="w-full md:w-1/2 resume-preview">
             <Neomorphism className="rounded-xl p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
               <div className="w-full aspect-[3/4] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300">
-                <object
-                  data="/resume.pdf#toolbar=0"
+                <embed
+                  src="/resume.pdf#view=FitH"
                   type="application/pdf"
                   className="absolute inset-0 w-full h-full rounded-lg bg-background border border-zinc-800/50"
                   style={{ 
@@ -77,11 +77,7 @@ const ResumeSection: React.FC = () => {
                     MozBackfaceVisibility: 'hidden',
                     backfaceVisibility: 'hidden'
                   }}
-                >
-                  <p className="text-center p-4">
-                    Unable to display PDF. <a href="/resume.pdf" className="text-primary hover:underline">Download instead</a>
-                  </p>
-                </object>
+                />
               </div>
             </Neomorphism>
           </div>
