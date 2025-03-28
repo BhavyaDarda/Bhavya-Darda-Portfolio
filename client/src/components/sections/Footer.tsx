@@ -1,11 +1,41 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Neomorphism } from '../ui/neomorphism';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
+  const footerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    const container = containerRef.current;
+    
+    if (footer && container) {
+      gsap.fromTo(container.children,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: footer,
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    }
+  }, []);
   
   const footerLinks = [
     { label: 'Home', href: '#hero' },
@@ -39,9 +69,16 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative py-12 mt-20">
-      <Neomorphism className="backdrop-blur-xl bg-background/30">
-        <div className="container mx-auto px-4 py-8">
+    <footer ref={footerRef} className="relative py-12 mt-20">
+      <Neomorphism className="backdrop-blur-xl bg-background/30 relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <motion.div 
+          ref={containerRef}
+          className="container mx-auto px-4 py-8 relative z-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Brand Section */}
             <div className="md:col-span-4">
@@ -63,7 +100,21 @@ const Footer: React.FC = () => {
                   <a
                     key={index}
                     href={link.href}
-                    className="text-sm hover:text-primary transition-colors duration-300 hover:translate-x-1 transform inline-flex items-center"
+                    className="text-sm hover:text-primary transition-all duration-300 hover:translate-x-1 transform inline-flex items-center group"
+                    onMouseEnter={(e) => {
+                      gsap.to(e.currentTarget, {
+                        scale: 1.05,
+                        duration: 0.2,
+                        ease: "power2.out"
+                      });
+                    }}
+                    onMouseLeave={(e) => {
+                      gsap.to(e.currentTarget, {
+                        scale: 1,
+                        duration: 0.2,
+                        ease: "power2.out"
+                      });
+                    }}
                   >
                     {link.label}
                   </a>
@@ -81,7 +132,7 @@ const Footer: React.FC = () => {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors duration-300 p-2 hover:bg-white/5 rounded-lg"
+                    className="hover:text-primary transition-all duration-300 p-2 hover:bg-white/5 rounded-lg hover:scale-110 hover:shadow-glow relative overflow-hidden group"
                     aria-label={link.label}
                   >
                     {renderSocialIcon(link.icon)}
@@ -107,17 +158,23 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="mt-12 pt-8 border-t border-white/10 relative">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+            <motion.div 
+              className="flex flex-col md:flex-row justify-between items-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <p className="text-sm opacity-70">
                 &copy; {currentYear} {t('footer.rights', 'Bhavya Darda. All rights reserved.')}
               </p>
               <p className="text-sm opacity-70">
                 {t('footer.madeWith', 'Made with')} ❤️ {t('footer.using', 'using React & TypeScript')}
               </p>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </Neomorphism>
     </footer>
   );
