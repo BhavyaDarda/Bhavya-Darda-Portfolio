@@ -421,10 +421,10 @@ const AIChatbot = () => {
 
   const getSuggestedQuestions = () => {
     return [
-      t('chatbot.suggestedQuestions.0'),
-      t('chatbot.suggestedQuestions.1'),
-      t('chatbot.suggestedQuestions.2'),
-      t('chatbot.suggestedQuestions.3')
+      "What projects have you worked on?",
+      "What are your technical skills?",
+      "Tell me about your experience",
+      "How can I contact you?"
     ];
   };
 
