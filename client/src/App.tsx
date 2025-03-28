@@ -5,8 +5,7 @@ import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
 import MobileMenu from "./components/MobileMenu";
 import ThemeSelector from "./components/ThemeSelector";
-// Temporarily comment out ParticleBackground to fix Three.js related errors
-// import ParticleBackground from "./components/ParticleBackground";
+import ParticleBackground from "./components/ParticleBackground";
 import HeroSection from "./components/sections/HeroSection";
 import AboutSection from "./components/sections/AboutSection";
 import SkillsSection from "./components/sections/SkillsSection";
@@ -48,8 +47,7 @@ function App() {
       ) : (
         <div className="relative">
           <CustomCursor />
-          {/* Temporarily comment out ParticleBackground to fix Three.js related errors */}
-          {/* <ParticleBackground /> */}
+          <ParticleBackground />
           
           <Navbar onMenuToggle={handleMenuToggle} />
           <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
