@@ -165,7 +165,7 @@ const MusicPlayer = () => {
     
     soundRef.current = new Howl({
       src: [audioUrl],
-      format: ['wav'],
+      format: ['mp3'],
       html5: true,
       volume: muted ? 0 : volume,
       loop: true,
