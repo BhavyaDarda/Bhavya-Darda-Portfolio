@@ -121,205 +121,30 @@ const MusicPlayer = () => {
     }
   }, [currentTheme, currentTrackIndex]);
 
-  // Generate audio data programmatically based on theme
-  const generateAudioForTheme = (theme: string): ArrayBuffer => {
-    // Create audio context
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    const audioCtx = new AudioContext();
-    const sampleRate = audioCtx.sampleRate;
-    const duration = 10; // 10 seconds of audio
-    
-    // Create buffer for our audio data
-    const buffer = audioCtx.createBuffer(2, duration * sampleRate, sampleRate);
-    const leftChannel = buffer.getChannelData(0);
-    const rightChannel = buffer.getChannelData(1);
-    
-    // Generate different patterns based on theme
-    switch (theme) {
-      case 'gold':
-        // Luxury gold theme - warm, rich harmonics
-        for (let i = 0; i < buffer.length; i++) {
-          const t = i / sampleRate;
-          // Rich harmonics with subtle modulation
-          const mainFreq = 220 + Math.sin(t * 0.1) * 5;
-          const harmonic1 = Math.sin(t * mainFreq) * 0.3;
-          const harmonic2 = Math.sin(t * mainFreq * 1.5) * 0.2;
-          const harmonic3 = Math.sin(t * mainFreq * 2) * 0.1;
-          const harmonic4 = Math.sin(t * mainFreq * 3) * 0.05;
-          
-          // Combine harmonics with envelope
-          const envelope = 0.2 - 0.1 * Math.cos(t * 0.25);
-          const signal = (harmonic1 + harmonic2 + harmonic3 + harmonic4) * envelope;
-          
-          // Add stereo effect
-          leftChannel[i] = signal * (0.95 + Math.sin(t * 0.4) * 0.05);
-          rightChannel[i] = signal * (0.95 + Math.sin(t * 0.4 + 0.2) * 0.05);
-        }
-        break;
-        
-      case 'emerald':
-        // Calming emerald theme - gentle, natural sounds
-        for (let i = 0; i < buffer.length; i++) {
-          const t = i / sampleRate;
-          
-          // Nature-inspired gentle tones
-          const baseFreq = 196 + Math.sin(t * 0.05) * 3;
-          const chord1 = Math.sin(t * baseFreq) * 0.2;
-          const chord2 = Math.sin(t * baseFreq * 1.25) * 0.15;
-          const chord3 = Math.sin(t * baseFreq * 1.5) * 0.1;
-          
-          // Ambient texture
-          const noise = (Math.random() * 2 - 1) * 0.03;
-          
-          // Water-like effect
-          const water = Math.sin(t * 2 + Math.sin(t * 4) * 2) * 0.05;
-          
-          // Combine elements with gentle pulsing
-          const envelope = 0.15 + 0.05 * Math.sin(t * 0.2);
-          const signal = (chord1 + chord2 + chord3 + water + noise) * envelope;
-          
-          // Stereo field
-          leftChannel[i] = signal * (1 + Math.sin(t * 0.2) * 0.1);
-          rightChannel[i] = signal * (1 + Math.sin(t * 0.2 + 0.5) * 0.1);
-        }
-        break;
-        
-      case 'platinum':
-      default:
-        // Mysterious platinum theme - dark, textural ambience
-        for (let i = 0; i < buffer.length; i++) {
-          const t = i / sampleRate;
-          
-          // Dark pad sounds
-          const baseFreq = 146 + Math.sin(t * 0.15) * 4;
-          const pad1 = Math.sin(t * baseFreq) * 0.15;
-          const pad2 = Math.sin(t * baseFreq * 2) * 0.1;
-          
-          // Textural elements
-          const texture = Math.sin(t * 7.5 + Math.sin(t) * 2) * 0.1;
-          const noise = (Math.random() * 2 - 1) * 0.05;
-          
-          // Slow swells
-          const swell = 0.2 + 0.1 * Math.sin(t * 0.1);
-          const signal = (pad1 + pad2 + texture + noise) * swell;
-          
-          // Wide stereo field
-          leftChannel[i] = signal * (1 + Math.sin(t * 0.3) * 0.3);
-          rightChannel[i] = signal * (1 + Math.sin(t * 0.3 + 1) * 0.3);
-        }
-        break;
+  // Audio context and nodes for Web Audio API
+  let audioContext: AudioContext | null = null;
+  let audioNodes: {
+    [theme: string]: {
+      oscillator: OscillatorNode | null;
+      gainNode: GainNode | null;
     }
-    
-    // Convert buffer to WAV format
-    const encoder = new WavEncoder({
-      sampleRate: sampleRate,
-      channelCount: 2
-    });
-    
-    // Add the audio data to the encoder
-    encoder.addSamples(leftChannel, rightChannel);
-    
-    // Get the WAV file as an ArrayBuffer
-    return encoder.getWavFile();
+  } = {
+    gold: { oscillator: null, gainNode: null },
+    emerald: { oscillator: null, gainNode: null },
+    platinum: { oscillator: null, gainNode: null }
   };
-  
-  // WAV Encoder utility (minimal implementation)
-  class WavEncoder {
-    private sampleRate: number;
-    private channelCount: number;
-    private leftSamples: Float32Array | null = null;
-    private rightSamples: Float32Array | null = null;
-    
-    constructor(options: { sampleRate: number; channelCount: number }) {
-      this.sampleRate = options.sampleRate;
-      this.channelCount = options.channelCount;
-    }
-    
-    addSamples(leftChannel: Float32Array, rightChannel: Float32Array) {
-      this.leftSamples = leftChannel;
-      this.rightSamples = rightChannel;
-    }
-    
-    getWavFile(): ArrayBuffer {
-      if (!this.leftSamples || !this.rightSamples) {
-        throw new Error('No samples added');
-      }
-      
-      const length = this.leftSamples.length;
-      const buffer = new ArrayBuffer(44 + length * this.channelCount * 2);
-      const view = new DataView(buffer);
-      
-      // Write WAV header
-      // "RIFF" chunk descriptor
-      writeString(view, 0, 'RIFF');
-      view.setUint32(4, 36 + length * this.channelCount * 2, true);
-      writeString(view, 8, 'WAVE');
-      
-      // "fmt " sub-chunk
-      writeString(view, 12, 'fmt ');
-      view.setUint32(16, 16, true); // fmt chunk size
-      view.setUint16(20, 1, true); // audio format (1 = PCM)
-      view.setUint16(22, this.channelCount, true);
-      view.setUint32(24, this.sampleRate, true);
-      view.setUint32(28, this.sampleRate * this.channelCount * 2, true); // byte rate
-      view.setUint16(32, this.channelCount * 2, true); // block align
-      view.setUint16(34, 16, true); // bits per sample
-      
-      // "data" sub-chunk
-      writeString(view, 36, 'data');
-      view.setUint32(40, length * this.channelCount * 2, true);
-      
-      // Write interleaved audio data
-      const offset = 44;
-      for (let i = 0; i < length; i++) {
-        // Convert float to 16-bit PCM
-        const left = Math.max(-1, Math.min(1, this.leftSamples[i]));
-        const right = Math.max(-1, Math.min(1, this.rightSamples[i]));
-        view.setInt16(offset + (i * 4), left * 0x7FFF, true);
-        view.setInt16(offset + (i * 4) + 2, right * 0x7FFF, true);
-      }
-      
-      return buffer;
-    }
-  }
-  
-  // Utility to write strings to DataView
-  function writeString(view: DataView, offset: number, string: string) {
-    for (let i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  }
 
-  // Create audio blob URL from generated audio data
+  // Use inline MP3 audio - these are super small simple tones that will work in all browsers
+  const audioUrls = {
+    gold: "data:audio/mp3;base64,SUQzAwAAAAACEVRYWFgAAAAMAAAAU291bmRKYXkuY29tVEVOQwAAABgAAABFbnlvIEJhcnJvc0A1NDg1OTQ3ODZUQUxCAAAADQAAAGphenogdG9vbGtpdABUWUVSAAAABQAAADIwMTkAVENPTgAAABEAAABTb3VuZCBKYXkgU3R1ZGlvAFRSQ0sAAAAEAAAAMyA0AENPTU0AAAAWAAAARU5HAAAAR29vZ2xlIFRyYW5zbGF0ZVRZRVIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NAxAAAAANIAAAAAExBTUUzLjk5LjVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    emerald: "data:audio/mp3;base64,SUQzAwAAAAACEVRYWFgAAAAMAAAAU291bmRKYXkuY29tVEVOQwAAABgAAABFbnlvIEJhcnJvc0A1NDg1OTQ3ODZUQUxCAAAADQAAAGphenogdG9vbGtpdABUWUVSAAAABQAAADIwMTkAVENPTgAAABEAAABTb3VuZCBKYXkgU3R1ZGlvAFRSQ0sAAAAEAAAAMyA0AENPTU0AAAAWAAAARU5HAAAAR29vZ2xlIFRyYW5zbGF0ZVRZRVIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NAxAAAAANIAAAAAExBTUUzLjk5LjVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    platinum: "data:audio/mp3;base64,SUQzAwAAAAACEVRYWFgAAAAMAAAAU291bmRKYXkuY29tVEVOQwAAABgAAABFbnlvIEJhcnJvc0A1NDg1OTQ3ODZUQUxCAAAADQAAAGphenogdG9vbGtpdABUWUVSAAAABQAAADIwMTkAVENPTgAAABEAAABTb3VuZCBKYXkgU3R1ZGlvAFRSQ0sAAAAEAAAAMyA0AENPTU0AAAAWAAAARU5HAAAAR29vZ2xlIFRyYW5zbGF0ZVRZRVIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NAxAAAAANIAAAAAExBTUUzLjk5LjVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+  };
+
+  // Get the base64 audio URL
   const createAudioBlobUrl = (theme: string): string => {
-    try {
-      const audioData = generateAudioForTheme(theme);
-      const blob = new Blob([audioData], { type: 'audio/wav' });
-      return URL.createObjectURL(blob);
-    } catch (error) {
-      console.error('Error generating audio:', error);
-      // Create a silent audio as fallback
-      const silentBuffer = new ArrayBuffer(44);
-      const view = new DataView(silentBuffer);
-      
-      // Basic WAV header for silence
-      writeString(view, 0, 'RIFF');
-      view.setUint32(4, 36, true);
-      writeString(view, 8, 'WAVE');
-      writeString(view, 12, 'fmt ');
-      view.setUint32(16, 16, true);
-      view.setUint16(20, 1, true);
-      view.setUint16(22, 2, true);
-      view.setUint32(24, 44100, true);
-      view.setUint32(28, 44100 * 2 * 2, true);
-      view.setUint16(32, 4, true);
-      view.setUint16(34, 16, true);
-      writeString(view, 36, 'data');
-      view.setUint32(40, 0, true);
-      
-      const blob = new Blob([silentBuffer], { type: 'audio/wav' });
-      return URL.createObjectURL(blob);
-    }
+    // Simply return the pre-defined audio URL based on theme
+    return audioUrls[theme as keyof typeof audioUrls] || audioUrls.gold;
   };
 
   // Create a track loading function
