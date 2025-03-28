@@ -66,16 +66,18 @@ const ResumeSection: React.FC = () => {
 
           <div className="w-full lg:w-1/2 md:sticky md:top-4 resume-preview">
             <Neomorphism className="rounded-xl p-2 sm:p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
-              <div className="w-full h-[calc(100vh-16rem)] min-h-[600px] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300">
+              <div className="w-full aspect-[3/4] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300 motion-safe:hover:scale-[1.02] motion-reduce:transform-none">
                 <embed
                   src="/resume.pdf#view=FitH"
                   type="application/pdf"
                   className="absolute inset-0 w-full h-full rounded-lg bg-background border border-zinc-800/50 hover:border-primary/50 transition-colors"
                   style={{ 
-                    transform: 'translate3d(0,0,0)',
-                    WebkitBackfaceVisibility: 'hidden',
+                    minHeight: 'min(600px, 70vh)',
+                    maxHeight: '90vh',
                     MozBackfaceVisibility: 'hidden',
-                    backfaceVisibility: 'hidden'
+                    backfaceVisibility: 'hidden',
+                    transform: 'translate3d(0,0,0)',
+                    WebkitBackfaceVisibility: 'hidden'
                   }}
                 />
               </div>
