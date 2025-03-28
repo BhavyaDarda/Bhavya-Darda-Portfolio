@@ -1,0 +1,36 @@
+[vite] connecting...
+[vite] connected.
+The above error occurred in the <ambientLight> component:
+
+    at ambientLight
+    at Suspense
+    at ErrorBoundary (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:16487:5)
+    at FiberProvider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:18071:21)
+    at Provider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:17758:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+The above error occurred in the <points> component:
+
+    at points
+    at Particles (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/src/components/ParticleBackground.tsx:22:22)
+    at Suspense
+    at ErrorBoundary (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:16487:5)
+    at FiberProvider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:18071:21)
+    at Provider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:17758:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+Cannot read properties of undefined (reading 'replit')
+Cannot read properties of undefined (reading 'replit')
+The above error occurred in the <ForwardRef(Canvas)> component:
+
+    at Canvas (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:18215:3)
+    at FiberProvider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@react-three_fiber.js?v=15d1d801:18071:21)
+    at CanvasWrapper
+    at div
+    at ErrorBoundary (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/src/components/ParticleBackground.tsx:78:5)
+    at ParticleBackground
+    at div
+    at App (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/src/App.tsx?v=9CaXZ56G7f92DedbkN5mI:37:33)
+    at QueryClientProvider (https://b036f6f2-5367-4ee5-b887-4ebbfefa44c6-00-2y0s4ty8spx5x.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=b3d22b1c:2805:3)
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
