@@ -5,6 +5,70 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply min-h-screen w-full overflow-x-hidden;
+    font-feature-settings: "kern" 1;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-feature-settings: "kern" 1, "ss01" 1, "ss02" 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media (dynamic-range: high) {
+    .glass {
+      backdrop-filter: blur(16px) saturate(180%);
+    }
+  }
+
+  @media screen and (orientation: landscape) {
+    .h-screen {
+      height: 100dvh;
+    }
+  }
+
+  @supports (font-variation-settings: normal) {
+    body {
+      font-feature-settings: normal;
+      font-variation-settings: "wght" 400;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer base {
   :root {
     --background: 0 0% 3%;
     --foreground: 0 0% 90%;

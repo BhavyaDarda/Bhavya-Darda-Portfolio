@@ -4,6 +4,21 @@ export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    screens: {
+      'xs': '375px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+      'tall': { 'raw': '(min-height: 800px)' },
+      'retina': { 'raw': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)' },
+      'motion-safe': { 'raw': '(prefers-reduced-motion: no-preference)' },
+      'motion-reduce': { 'raw': '(prefers-reduced-motion: reduce)' },
+      'contrast-more': { 'raw': '(prefers-contrast: more)' },
+      'portrait': { 'raw': '(orientation: portrait)' },
+      'landscape': { 'raw': '(orientation: landscape)' }
+    },
     extend: {
       fontFamily: {
         sans: ['Outfit', 'Poppins', 'sans-serif'],
