@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3%;
+    --foreground: 0 0% 90%;
+
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 90%;
+
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-primary: 46 57% 52%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-ring: 46 57% 52%;
+
+    --primary: 46 57% 52%;
+    --primary-foreground: 0 0% 3%;
+
+    --secondary: 216 69% 21%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 0 0% 3%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 90%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 46 57% 52%;
+
+    --chart-1: 46 57% 52%;
+    --chart-2: 216 69% 21%;
+    --chart-3: 190 100% 50%;
+    --chart-4: 340 82% 52%;
+    --chart-5: 92 70% 50%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply antialiased bg-background text-foreground selection:bg-accent selection:text-accent-foreground;
+  }
+}
+
+@layer components {
+  /* Glassmorphism */
+  .glassmorphism {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg transition-all duration-300;
+  }
+
+  .glassmorphism:hover {
+    @apply bg-white/10;
+  }
+
+  /* Neomorphism */
+  .neomorphism {
+    @apply bg-gradient-to-br from-[#0a0a0a] to-[#111111] shadow-[8px_8px_16px_#040404,-8px_-8px_16px_#121212] transition-all duration-300;
+  }
+
+  .neomorphism:hover {
+    @apply shadow-[12px_12px_24px_#040404,-12px_-12px_24px_#121212];
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent;
+  }
+
+  .gradient-text-blue {
+    @apply bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  /* Custom cursor */
+  .cursor-none {
+    cursor: none;
+  }
+}
