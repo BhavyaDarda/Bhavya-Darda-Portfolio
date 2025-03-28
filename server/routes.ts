@@ -24,6 +24,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  app.post('/api/chat', async (req, res) => {
+    const { message, language = 'en' } = req.body;
+    // TODO: Implement chat request handling with language support here.  This includes
+    //       - Receiving the user's message.
+    //       - Determining the appropriate language model based on `language`.
+    //       - Sending the message to the language model.
+    //       - Receiving the response from the language model.
+    //       - Sending the response back to the client.
+    //       - Error handling.
+    res.send({ response: "Chat response placeholder" });
+  });
+
+
   const httpServer = createServer(app);
 
   return httpServer;
