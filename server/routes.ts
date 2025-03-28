@@ -12,9 +12,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/resume.pdf', (req, res) => {
     const pdfPath = path.join(__dirname, '../client/public/resume.pdf');
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Content-Disposition', 'inline; filename="resume.pdf"');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; object-src 'self'");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(pdfPath, (err) => {
       if (err) {
         console.error('Error serving PDF:', err);
