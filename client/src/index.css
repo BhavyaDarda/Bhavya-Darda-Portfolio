@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 3%;
@@ -56,37 +58,110 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply antialiased bg-background text-foreground selection:bg-accent selection:text-accent-foreground;
+    font-family: 'Outfit', 'Poppins', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Remove the blue highlight on mobile touch */
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer components {
   /* Glassmorphism */
   .glassmorphism {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg transition-all duration-300;
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 shadow-xl transition-all duration-300;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 5px 10px rgba(0, 0, 0, 0.4);
   }
 
   .glassmorphism:hover {
     @apply bg-white/10;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9), 0 8px 15px rgba(0, 0, 0, 0.5);
   }
 
   /* Neomorphism */
   .neomorphism {
-    @apply bg-gradient-to-br from-[#0a0a0a] to-[#111111] shadow-[8px_8px_16px_#040404,-8px_-8px_16px_#121212] transition-all duration-300;
+    @apply bg-gradient-to-br from-[#0a0a0a] to-[#111111] transition-all duration-300;
+    box-shadow: 8px 8px 16px #040404, -8px -8px 16px #121212;
   }
 
   .neomorphism:hover {
-    @apply shadow-[12px_12px_24px_#040404,-12px_-12px_24px_#121212];
+    box-shadow: 12px 12px 24px #040404, -12px -12px 24px #121212;
   }
   
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+  }
+
+  .gradient-text-emerald {
+    @apply bg-gradient-to-r from-emerald-500 via-emerald-300 to-emerald-500 bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+  }
+
+  .gradient-text-platinum {
+    @apply bg-gradient-to-r from-gray-300 via-white to-gray-300 bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
   }
 
   .gradient-text-blue {
     @apply bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent;
+  }
+
+  /* Section styles */
+  .section-padding {
+    @apply py-20 lg:py-28 px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply text-xl font-space uppercase tracking-wider text-primary mb-2;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl lg:text-5xl font-outfit font-semibold mb-4;
+  }
+
+  .section-description {
+    @apply max-w-2xl mx-auto opacity-80 text-lg;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium transition-all duration-300 hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)];
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/5 hover:bg-white/10 rounded-full text-sm font-medium transition-all duration-300;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 bg-transparent border border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-full text-sm font-medium transition-all duration-300;
+  }
+
+  /* Card styles */
+  .premium-card {
+    @apply rounded-xl overflow-hidden transition-all duration-500;
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.9);
+  }
+
+  .premium-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.95);
   }
 }
 
@@ -95,4 +170,66 @@
   .cursor-none {
     cursor: none;
   }
+
+  /* Text shadow */
+  .text-shadow-sm {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-md {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Parallax effect */
+  .parallax {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}
+
+/* Animations */
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 10, 10, 0.95);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.7);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.9);
 }
