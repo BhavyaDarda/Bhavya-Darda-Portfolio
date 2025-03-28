@@ -71,6 +71,7 @@ const ResumeSection: React.FC = () => {
                   src="/resume.pdf#view=FitH"
                   className="absolute inset-0 w-full h-full rounded-lg bg-background"
                   style={{ minHeight: '600px' }}
+                  sandbox="allow-same-origin"
                 />
               </div>
             </Neomorphism>

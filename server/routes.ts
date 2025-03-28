@@ -3,11 +3,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
-
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // Serve PDF with correct headers
+  app.get('/resume.pdf', (req, res) => {
+    res.setHeader('Content-Security-Policy', "default-src 'self'; object-src 'self'");
+    res.setHeader('Content-Type', 'application/pdf');
+    res.sendFile('public/resume.pdf', { root: 'client' });
+  });
 
   const httpServer = createServer(app);
 
