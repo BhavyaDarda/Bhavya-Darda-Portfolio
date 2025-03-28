@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlobeIcon, CheckIcon, ChevronDownIcon } from 'lucide-react';
 
-import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
-
 interface Language {
   code: string;
   name: string;

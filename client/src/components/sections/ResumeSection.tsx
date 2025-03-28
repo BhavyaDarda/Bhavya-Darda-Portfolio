@@ -3,18 +3,13 @@ import { useMagnetic } from '../../hooks/use-magnetic';
 import { Neomorphism } from '../ui/neomorphism';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useTranslation } from 'react-i18next'; // Assuming react-i18next is used
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ResumeSection: React.FC = () => {
-  const { t, i18n } = useTranslation();
   const downloadBtnRef = useMagnetic<HTMLAnchorElement>({ strength: 0.15 });
 
   useEffect(() => {
-    // Update PDF language when language changes (This might need adjustment depending on how the PDF is handled)
-    document.title = t('resume.title');
-
     // GSAP animations with ScrollTrigger
     gsap.from('.resume-content', {
       opacity: 0,
@@ -37,18 +32,18 @@ const ResumeSection: React.FC = () => {
         toggleActions: 'play none none none'
       }
     });
-  }, [i18n.language, t]);
+  }, []);
 
   return (
     <section id="resume" className="relative py-20 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="container mx-auto relative z-10">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-12">
           <div className="w-full md:w-1/2 resume-content">
-            <h2 className="text-xl font-space uppercase tracking-wider text-primary mb-2">{t('resume.title')}</h2> {/* Translated title */}
-            <h3 className="text-3xl md:text-4xl font-outfit font-semibold mb-6">{t('resume.downloadCV')}</h3> {/* Translated Download My CV */}
+            <h2 className="text-xl font-space uppercase tracking-wider text-primary mb-2">My Resume</h2>
+            <h3 className="text-3xl md:text-4xl font-outfit font-semibold mb-6">Download My CV</h3>
 
             <p className="opacity-80 mb-8 text-sm md:text-base">
-              {t('resume.description')} {/* Translated description */}
+              For a comprehensive overview of my skills, experience, and qualifications, download my resume. It includes detailed information about my professional background, technical expertise, and achievements.
             </p>
 
             <a 
@@ -56,7 +51,7 @@ const ResumeSection: React.FC = () => {
               ref={downloadBtnRef}
               className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary-light transition-colors group"
             >
-              <span>{t('resume.downloadButton')}</span> {/* Translated Download Resume */}
+              <span>Download Resume</span>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 fill="none" 
