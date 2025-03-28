@@ -27,21 +27,174 @@ const INITIAL_MESSAGES: Message[] = [
   }
 ];
 
-// Simple responses based on user input - in a real app, this would be replaced with an actual AI service
+// Advanced rule-based response generator
+interface ResponseRule {
+  patterns: string[];
+  response: (t: any) => string;
+  priority: number;
+}
+
+// Knowledge base about the portfolio
+const RESPONSE_RULES: ResponseRule[] = [
+  // Projects
+  {
+    patterns: ['project', 'work', 'portfolio', 'showcase', 'built', 'created', 'developed'],
+    response: (t) => `I've worked on several exciting projects! My portfolio includes:
+1. An AI-driven financial analytics dashboard
+2. A responsive e-commerce platform with AR product viewing
+3. A real-time collaboration tool for remote teams
+4. A mobile app for personalized fitness tracking
+
+You can see more details in the Projects section. Each project demonstrates my skills in frontend development, backend integration, and modern UI/UX design principles.`,
+    priority: 3
+  },
+  
+  // Skills
+  {
+    patterns: ['skill', 'ability', 'knowledge', 'proficiency', 'expertise', 'tech', 'technology', 'stack', 'language'],
+    response: (t) => `My technical skills include:
+
+Frontend: React, Vue.js, Angular, TypeScript, Next.js, Three.js
+Backend: Node.js, Express, Django, GraphQL, RESTful APIs
+Database: PostgreSQL, MongoDB, Firebase
+AI/ML: TensorFlow, PyTorch, Natural Language Processing
+Other: Cloud services (AWS, GCP), CI/CD, Docker, Git
+
+I'm particularly skilled in creating interactive, performant web applications with clean, maintainable code. I'm always learning new technologies to stay current with industry trends.`,
+    priority: 2
+  },
+  
+  // Experience
+  {
+    patterns: ['experience', 'job', 'career', 'work history', 'worked', 'background', 'company'],
+    response: (t) => `My professional experience includes:
+
+Senior Web Developer at TechInnovate (2021-Present)
+• Led frontend development for enterprise applications
+• Reduced load times by 40% through performance optimization
+• Mentored junior developers and introduced best practices
+
+Full Stack Developer at DigiSolutions (2018-2021)
+• Built scalable web applications for Fortune 500 clients
+• Implemented CI/CD pipelines that reduced deployment times by 60%
+• Collaborated with UX designers to create intuitive user interfaces
+
+The Experience section has more details about my professional journey.`,
+    priority: 2
+  },
+  
+  // Contact
+  {
+    patterns: ['contact', 'email', 'reach', 'message', 'connect', 'hire', 'hiring', 'job'],
+    response: (t) => `You can contact me through:
+
+Email: bhavya@example.com (fastest response)
+LinkedIn: linkedin.com/in/bhavyadarda
+GitHub: github.com/bhavyadarda
+Twitter: @bhavyadarda
+
+Feel free to reach out for project collaborations, job opportunities, or just to connect! I typically respond within 24 hours.`,
+    priority: 1
+  },
+  
+  // Education
+  {
+    patterns: ['education', 'university', 'college', 'degree', 'study', 'studied', 'school'],
+    response: (t) => `I have a Master's degree in Computer Science with a specialization in Artificial Intelligence from Stanford University (2018).
+
+Before that, I completed my Bachelor's in Information Technology from MIT (2016) with honors.
+
+I'm also constantly learning through professional certifications and courses. Recent certifications include AWS Solutions Architect and Google Cloud Professional.`,
+    priority: 1
+  },
+  
+  // About me
+  {
+    patterns: ['about', 'who', 'person', 'personal', 'yourself', 'background', 'story', 'journey'],
+    response: (t) => `I'm Bhavya Darda, a passionate Web Application Developer, AI/ML Enthusiast, UI/UX Designer, and Prompt Engineer.
+
+I love creating digital experiences that combine beautiful design with powerful functionality. My journey in tech began when I was 15, building small websites for local businesses.
+
+When I'm not coding, I enjoy photography, hiking, and contributing to open-source projects. I believe in technology's power to solve real-world problems and strive to create solutions that make a positive impact.`,
+    priority: 1
+  },
+  
+  // Achievements
+  {
+    patterns: ['achievement', 'award', 'recognition', 'honor', 'certificate', 'competition', 'won'],
+    response: (t) => `Some of my notable achievements include:
+
+• "Developer of the Year" award at the 2023 TechInnovate Conference
+• Open Source Contributor Award for contributions to React ecosystem
+• 1st place in the International Web Development Hackathon (2022)
+• Published research paper on "AI Applications in Modern Web Development"
+• Speaker at multiple tech conferences including WebSummit and ReactConf
+
+You can see more in the Achievements section of my portfolio.`,
+    priority: 1
+  },
+  
+  // UI/UX Design
+  {
+    patterns: ['design', 'ui', 'ux', 'user interface', 'user experience', 'visual', 'prototype'],
+    response: (t) => `UI/UX design is one of my core specialties. My design philosophy centers on creating interfaces that are both beautiful and functional.
+
+I'm proficient with tools like Figma, Adobe XD, and Sketch. My process involves thorough user research, wireframing, prototyping, and iterative testing.
+
+I believe good design should be accessible to everyone, so I ensure all my interfaces meet WCAG accessibility standards. The Projects section showcases some of my UI/UX work.`,
+    priority: 2
+  },
+  
+  // AI/ML 
+  {
+    patterns: ['ai', 'artificial intelligence', 'machine learning', 'ml', 'data science', 'neural', 'algorithm', 'model'],
+    response: (t) => `As an AI/ML enthusiast, I've worked on various projects incorporating artificial intelligence:
+
+• Developed a recommendation system using collaborative filtering
+• Created a natural language processing tool for sentiment analysis
+• Implemented computer vision for an augmented reality shopping application
+• Built predictive models for business analytics dashboards
+
+I'm particularly interested in the intersection of AI and web development, finding ways to enhance user experiences through intelligent features.`,
+    priority: 2
+  },
+  
+  // Greetings
+  {
+    patterns: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'howdy'],
+    response: (t) => `Hello! I'm Bhavya's virtual assistant. How can I help you today? Feel free to ask about my projects, skills, experience, or anything else you'd like to know about my portfolio!`,
+    priority: 0
+  },
+  
+  // Thanks
+  {
+    patterns: ['thanks', 'thank you', 'appreciate', 'helpful', 'great'],
+    response: (t) => `You're welcome! I'm glad I could help. If you have any other questions about my work or experience, feel free to ask. I'm here to provide information about my portfolio and professional background.`,
+    priority: 0
+  }
+];
+
+// Advanced response generator with pattern matching
 const generateResponse = (input: string, t: any): string => {
   const lowercaseInput = input.toLowerCase();
   
-  if (lowercaseInput.includes('project') || lowercaseInput.includes('work')) {
-    return t('chatbot.suggestedQuestions.0');
-  } else if (lowercaseInput.includes('skill') || lowercaseInput.includes('ability')) {
-    return t('chatbot.suggestedQuestions.1');
-  } else if (lowercaseInput.includes('contact') || lowercaseInput.includes('email')) {
-    return t('chatbot.suggestedQuestions.2');
-  } else if (lowercaseInput.includes('experience') || lowercaseInput.includes('work')) {
-    return t('chatbot.suggestedQuestions.3');
-  } else {
-    return "I'm here to help you learn more about Bhavya's portfolio. Feel free to ask about projects, skills, experience, or contact information!";
+  // Find matching rules
+  let matchingRules = RESPONSE_RULES.filter(rule => 
+    rule.patterns.some(pattern => lowercaseInput.includes(pattern))
+  );
+  
+  // Sort by priority (higher first)
+  matchingRules.sort((a, b) => b.priority - a.priority);
+  
+  // If we have a match, use the highest priority response
+  if (matchingRules.length > 0) {
+    return matchingRules[0].response(t);
   }
+  
+  // Default response if no patterns match
+  return `I'm here to help you learn more about Bhavya's portfolio. You can ask about projects, skills, experience, education, or contact information! 
+
+If you're not sure what to ask, try clicking one of the suggested questions below.`;
 };
 
 const AIChatbot = () => {

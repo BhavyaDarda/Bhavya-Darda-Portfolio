@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Howl } from 'howler';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -10,16 +10,20 @@ import {
   SkipBackIcon, 
   VolumeIcon, 
   Volume2Icon,
-  XIcon
+  XIcon,
+  Volume1Icon,
+  VolumeXIcon,
+  LoaderIcon
 } from 'lucide-react';
 import { useThemeStore } from '../../lib/theme';
 
-// Define music tracks - using free royalty-free music URLs
+// Define music tracks - using free royalty-free music URLs from freesound.org
 const musicTracks = [
   {
     id: 'gold',
     name: 'Luxury Gold',
     url: 'https://cdn.freesound.org/previews/635/635263_13416294-lq.mp3',
+    fallbackUrl: 'https://cdn.freesound.org/previews/450/450742_9028513-lq.mp3',
     theme: 'gold',
     mood: 'elegant'
   },
@@ -27,6 +31,7 @@ const musicTracks = [
     id: 'emerald',
     name: 'Emerald Ambience',
     url: 'https://cdn.freesound.org/previews/515/515954_1115287-lq.mp3',
+    fallbackUrl: 'https://cdn.freesound.org/previews/459/459145_5674468-lq.mp3',
     theme: 'emerald',
     mood: 'calm'
   },
@@ -34,28 +39,72 @@ const musicTracks = [
     id: 'platinum',
     name: 'Platinum Noir',
     url: 'https://cdn.freesound.org/previews/612/612095_5674468-lq.mp3',
+    fallbackUrl: 'https://cdn.freesound.org/previews/479/479557_5674468-lq.mp3',
     theme: 'platinum',
     mood: 'mysterious'
   }
 ];
+
+interface MusicState {
+  isLoading: boolean;
+  isError: boolean;
+  currentTime: number;
+  duration: number;
+}
 
 const MusicPlayer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [volume, setVolume] = useState(0.5);
+  const [musicState, setMusicState] = useState<MusicState>({
+    isLoading: false,
+    isError: false,
+    currentTime: 0,
+    duration: 0
+  });
+  const [useFallback, setUseFallback] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [prevVolume, setPrevVolume] = useState(0.5);
+  
   const { t } = useTranslation();
   const soundRef = useRef<Howl | null>(null);
+  const seekInterval = useRef<number | null>(null);
   const { currentTheme } = useThemeStore();
   
   // Get current track
   const currentTrack = musicTracks[currentTrackIndex];
 
-  // Initialize and cleanup Howl on mount/unmount
+  // Attempt to preload tracks for better performance
   useEffect(() => {
+    // Preload all tracks in the background
+    const preloadTracks = async () => {
+      musicTracks.forEach(track => {
+        const audio = new Audio();
+        audio.src = track.url;
+        audio.preload = 'metadata';
+      });
+    };
+    
+    preloadTracks().catch(err => console.error('Track preloading failed:', err));
+    
+    // Load music preference from localStorage
+    const savedVolume = localStorage.getItem('musicVolume');
+    if (savedVolume) {
+      setVolume(parseFloat(savedVolume));
+    }
+    
+    const savedMuted = localStorage.getItem('musicMuted');
+    if (savedMuted) {
+      setMuted(savedMuted === 'true');
+    }
+    
     return () => {
       if (soundRef.current) {
         soundRef.current.unload();
+      }
+      if (seekInterval.current) {
+        clearInterval(seekInterval.current as unknown as number);
       }
     };
   }, []);
@@ -68,64 +117,168 @@ const MusicPlayer = () => {
     }
   }, [currentTheme, currentTrackIndex]);
 
-  // Load new track when current track changes
-  useEffect(() => {
+  // Create a track loading function that uses fallback if primary fails
+  const createTrack = useCallback((primaryUrl: string, fallbackUrl: string) => {
+    setMusicState(prev => ({ ...prev, isLoading: true, isError: false }));
+    
+    const trackUrl = useFallback ? fallbackUrl : primaryUrl;
+    
     if (soundRef.current) {
       soundRef.current.unload();
     }
+    
+    if (seekInterval.current) {
+      clearInterval(seekInterval.current as unknown as number);
+    }
 
     soundRef.current = new Howl({
-      src: [currentTrack.url],
+      src: [trackUrl],
       html5: true,
-      volume: volume,
+      volume: muted ? 0 : volume,
       loop: true,
+      
+      // Success handlers
+      onload: () => {
+        setMusicState(prev => ({
+          ...prev,
+          isLoading: false,
+          isError: false,
+          duration: soundRef.current?.duration() || 0
+        }));
+        
+        // Start time tracking
+        seekInterval.current = window.setInterval(() => {
+          if (soundRef.current && isPlaying) {
+            const seekValue = soundRef.current.seek();
+            setMusicState(prev => ({
+              ...prev,
+              currentTime: typeof seekValue === 'number' ? seekValue : 0
+            }));
+          }
+        }, 1000) as unknown as number;
+      },
+      
       onplay: () => {
         setIsPlaying(true);
       },
+      
       onpause: () => {
         setIsPlaying(false);
       },
+      
       onstop: () => {
         setIsPlaying(false);
+      },
+      
+      // Error handlers
+      onloaderror: (_, error) => {
+        console.error("Music load error:", error);
+        setMusicState(prev => ({ ...prev, isLoading: false, isError: true }));
+        
+        // Try fallback URL if we haven't already
+        if (!useFallback) {
+          console.log("Trying fallback URL...");
+          setUseFallback(true);
+          createTrack(primaryUrl, fallbackUrl);
+        }
+      },
+      
+      onplayerror: (_, error) => {
+        console.error("Music play error:", error);
+        setIsPlaying(false);
+        setMusicState(prev => ({ ...prev, isError: true }));
+        
+        // Try fallback URL if we haven't already
+        if (!useFallback) {
+          setUseFallback(true);
+          createTrack(primaryUrl, fallbackUrl);
+        }
       }
     });
 
+    return soundRef.current;
+  }, [useFallback, volume, muted, isPlaying]);
+
+  // Load new track when current track changes
+  useEffect(() => {
+    const track = createTrack(currentTrack.url, currentTrack.fallbackUrl);
+    
     if (isPlaying) {
-      soundRef.current.play();
+      track.play();
     }
-  }, [currentTrackIndex, currentTrack.url]);
+    
+    return () => {
+      if (seekInterval.current) {
+        clearInterval(seekInterval.current as unknown as number);
+      }
+    };
+  }, [currentTrackIndex, currentTrack.url, currentTrack.fallbackUrl, createTrack]);
 
   // Update volume when it changes
   useEffect(() => {
     if (soundRef.current) {
-      soundRef.current.volume(volume);
+      soundRef.current.volume(muted ? 0 : volume);
     }
-  }, [volume]);
+    
+    // Save volume preference to localStorage
+    localStorage.setItem('musicVolume', volume.toString());
+    localStorage.setItem('musicMuted', muted.toString());
+  }, [volume, muted]);
 
   const togglePlay = () => {
     if (!soundRef.current) return;
     
-    if (isPlaying) {
-      soundRef.current.pause();
-    } else {
-      soundRef.current.play();
+    try {
+      if (isPlaying) {
+        soundRef.current.pause();
+      } else {
+        if (musicState.isError) {
+          // Try to reload the track if there was an error
+          setUseFallback(!useFallback);
+          const track = createTrack(currentTrack.url, currentTrack.fallbackUrl);
+          track.play();
+        } else {
+          soundRef.current.play();
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling play state:", error);
+      setMusicState(prev => ({ ...prev, isError: true }));
     }
-    setIsPlaying(!isPlaying);
   };
 
   const nextTrack = () => {
     const newIndex = (currentTrackIndex + 1) % musicTracks.length;
     setCurrentTrackIndex(newIndex);
+    setUseFallback(false); // Reset fallback status for new track
   };
 
   const prevTrack = () => {
     const newIndex = (currentTrackIndex - 1 + musicTracks.length) % musicTracks.length;
     setCurrentTrackIndex(newIndex);
+    setUseFallback(false); // Reset fallback status for new track
+  };
+
+  const toggleMute = () => {
+    if (muted) {
+      setVolume(prevVolume);
+      setMuted(false);
+    } else {
+      setPrevVolume(volume);
+      setMuted(true);
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    
+    // If volume is set to 0, mute; if increasing from 0, unmute
+    if (newVolume === 0) {
+      setMuted(true);
+    } else if (muted) {
+      setMuted(false);
+    }
   };
 
   // Animation variants
@@ -260,12 +413,24 @@ const MusicPlayer = () => {
                 </button>
                 <button
                   onClick={togglePlay}
-                  className="p-3 rounded-full bg-primary text-white hover:bg-primary/80 transition-colors"
+                  disabled={musicState.isLoading}
+                  className={`p-3 rounded-full ${musicState.isLoading ? 'bg-gray-700' : 'bg-primary'} text-white hover:bg-primary/80 transition-colors relative`}
                 >
-                  {isPlaying 
-                    ? <PauseIcon className="h-6 w-6" /> 
-                    : <PlayIcon className="h-6 w-6" />
-                  }
+                  {musicState.isLoading ? (
+                    <LoaderIcon className="h-6 w-6 animate-spin" />
+                  ) : musicState.isError ? (
+                    <PlayIcon className="h-6 w-6" />
+                  ) : isPlaying ? (
+                    <PauseIcon className="h-6 w-6" /> 
+                  ) : (
+                    <PlayIcon className="h-6 w-6" />
+                  )}
+                  
+                  {musicState.isError && (
+                    <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                      {useFallback ? "Try again" : "Using fallback"}
+                    </span>
+                  )}
                 </button>
                 <button
                   onClick={nextTrack}
@@ -277,23 +442,33 @@ const MusicPlayer = () => {
 
               {/* Volume control */}
               <div className="flex items-center space-x-2">
-                <button className="p-2 rounded-full hover:bg-white/10 transition-colors">
-                  {volume > 0.5 
-                    ? <Volume2Icon className="h-4 w-4 text-white" /> 
-                    : <VolumeIcon className="h-4 w-4 text-white" />
-                  }
+                <button 
+                  onClick={toggleMute}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                  aria-label={muted ? "Unmute" : "Mute"}
+                >
+                  {muted ? (
+                    <VolumeXIcon className="h-4 w-4 text-white/70" />
+                  ) : volume > 0.7 ? (
+                    <Volume2Icon className="h-4 w-4 text-white" /> 
+                  ) : volume > 0.3 ? (
+                    <Volume1Icon className="h-4 w-4 text-white" />
+                  ) : (
+                    <VolumeIcon className="h-4 w-4 text-white" />
+                  )}
                 </button>
                 <input
                   type="range"
                   min="0"
                   max="1"
                   step="0.01"
-                  value={volume}
+                  value={muted ? 0 : volume}
                   onChange={handleVolumeChange}
                   className="flex-1 appearance-none h-1 rounded-full bg-white/20"
                   style={{
-                    background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${volume * 100}%, rgba(255, 255, 255, 0.2) ${volume * 100}%, rgba(255, 255, 255, 0.2) 100%)`,
+                    background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${muted ? 0 : volume * 100}%, rgba(255, 255, 255, 0.2) ${muted ? 0 : volume * 100}%, rgba(255, 255, 255, 0.2) 100%)`,
                   }}
+                  aria-label="Volume control"
                 />
               </div>
             </div>

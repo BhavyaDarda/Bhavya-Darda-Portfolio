@@ -275,15 +275,19 @@ const CustomCursor: React.FC = () => {
         transition={{ duration: 0.4 }}
       >
         <motion.div 
-          className="rounded-full flex items-center justify-center backdrop-blur-[2px] gpu-accelerated"
+          className="flex items-center justify-center backdrop-blur-[2px] gpu-accelerated"
+          style={{
+            borderRadius: isHovering ? '50%' : '8px',
+            clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
+          }}
           animate={{
-            width: isHovering ? '130px' : isPointer ? '60px' : '44px',
-            height: isHovering ? '130px' : isPointer ? '60px' : '44px',
+            width: isHovering ? '130px' : isPointer ? '52px' : '44px',
+            height: isHovering ? '130px' : isPointer ? '52px' : '44px',
             backgroundColor: isHovering ? `${cursorColor}15` : 'rgba(0, 0, 0, 0.001)',
             borderColor: cursorColor,
             borderWidth: isClick ? '1px' : '2px',
             boxShadow: isPointer ? cursorGlow : 'none',
-            rotate: isMoving ? mouseSpeed * 10 : 0,
+            rotate: isPointer ? (isMoving ? mouseSpeed * 45 : 45) : isMoving ? mouseSpeed * 10 : 0,
           }}
           transition={{ 
             duration: 0.2,
@@ -294,17 +298,20 @@ const CustomCursor: React.FC = () => {
         >
           {/* Animated inner glow effect */}
           <motion.div
-            className="absolute rounded-full z-0 gpu-accelerated"
+            className="absolute z-0 gpu-accelerated"
             style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.001)' // Set initial backgroundColor to avoid animation warning
+              backgroundColor: 'rgba(0, 0, 0, 0.001)', // Set initial backgroundColor to avoid animation warning
+              borderRadius: isHovering ? '50%' : '6px',
+              clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
             }}
             animate={{
-              width: isHovering ? '128px' : isPointer ? '58px' : '42px',
-              height: isHovering ? '128px' : isPointer ? '58px' : '42px',
+              width: isHovering ? '128px' : isPointer ? '50px' : '40px',
+              height: isHovering ? '128px' : isPointer ? '50px' : '40px',
               opacity: isClick ? 0.8 : 0.4,
               borderColor: cursorColor,
               borderWidth: '1px',
               scale: isClick ? 0.9 : 1,
+              rotate: isPointer ? (isMoving ? mouseSpeed * 45 : 45) : 0,
             }}
             transition={{ duration: 0.2 }}
           />
@@ -331,18 +338,21 @@ const CustomCursor: React.FC = () => {
       {/* Highly responsive inner dot cursor */}
       <motion.div
         ref={cursorInnerRef}
-        className="fixed pointer-events-none z-[101] rounded-full transform -translate-x-1/2 -translate-y-1/2 will-change-transform gpu-accelerated"
+        className="fixed pointer-events-none z-[101] transform -translate-x-1/2 -translate-y-1/2 will-change-transform gpu-accelerated"
         style={{ 
           x: dotX, 
-          y: dotY
+          y: dotY,
+          borderRadius: isPointer ? '0' : '50%',
+          clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
         }}
         animate={{
-          width: isHovering ? '0' : isPointer ? '10px' : '6px',
-          height: isHovering ? '0' : isPointer ? '10px' : '6px',
+          width: isHovering ? '0' : isPointer ? '12px' : '6px',
+          height: isHovering ? '0' : isPointer ? '12px' : '6px',
           backgroundColor: cursorColor,
           opacity: isHovering ? 0 : 1,
           boxShadow: isPointer ? cursorGlow : 'none',
-          scale: isClick ? 0.5 : 1
+          scale: isClick ? 0.5 : 1,
+          rotate: isPointer ? 45 : 0
         }}
         transition={{ 
           duration: 0.08,
