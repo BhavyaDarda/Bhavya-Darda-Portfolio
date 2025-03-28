@@ -160,14 +160,16 @@ const MusicPlayer = () => {
       clearInterval(seekInterval.current as unknown as number);
     }
     
-    // Generate audio for this theme
+    // Use theme-specific audio
     const audioUrl = createAudioBlobUrl(themeId);
     
     soundRef.current = new Howl({
       src: [audioUrl],
+      format: ['wav'],
       html5: true,
       volume: muted ? 0 : volume,
       loop: true,
+      preload: true,
       
       // Success handlers
       onload: () => {
