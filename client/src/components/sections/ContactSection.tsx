@@ -276,21 +276,7 @@ const ContactSection: React.FC = () => {
                 </div>
               </div>
               
-              <div className="mt-8 pt-8 border-t border-white/10">
-                <h5 className="font-outfit font-medium mb-4">Connect With Me</h5>
-                <div className="flex space-x-4">
-                  {contactInfo.socialLinks.map((platform, index) => (
-                    <a 
-                      key={index} 
-                      href="#" 
-                      className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all"
-                      aria-label={`Follow on ${platform}`}
-                    >
-                      {getSocialIcon(platform)}
-                    </a>
-                  ))}
-                </div>
-              </div>
+              
             </Neomorphism>
           </div>
         </div>
