@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { applyTheme } from "./lib/theme";
+import { Router, Route } from "wouter";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
+import { Toaster } from "./components/ui/toaster";
+import "./i18n"; // Import i18n initialization
+
+// Components
 import CustomCursor from "./components/CustomCursor";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
@@ -15,6 +22,14 @@ import AchievementsSection from "./components/sections/AchievementsSection";
 import ResumeSection from "./components/sections/ResumeSection";
 import ContactSection from "./components/sections/ContactSection";
 import Footer from "./components/sections/Footer";
+
+// Features
+import LanguageSwitcher from "./components/features/LanguageSwitcher";
+import AIChatbot from "./components/features/AIChatbot";
+import MusicPlayer from "./components/features/MusicPlayer";
+
+// Pages
+import NotFound from "./pages/not-found";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -41,33 +56,46 @@ function App() {
   };
 
   return (
-    <>
-      {loading ? (
-        <Loader onComplete={() => setLoading(false)} />
-      ) : (
-        <div className="relative">
-          <CustomCursor />
-          <ParticleBackground />
-          
-          <Navbar onMenuToggle={handleMenuToggle} />
-          <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-          <ThemeSelector />
-          
-          <main>
-            <HeroSection />
-            <AboutSection />
-            <SkillsSection />
-            <ProjectsSection />
-            <ExperienceSection />
-            <AchievementsSection />
-            <ResumeSection />
-            <ContactSection />
-          </main>
-          
-          <Footer />
-        </div>
-      )}
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Suspense fallback={<div className="h-screen w-screen bg-black"></div>}>
+          {loading ? (
+            <Loader onComplete={() => setLoading(false)} />
+          ) : (
+            <div className="relative">
+              <CustomCursor />
+              <ParticleBackground />
+              
+              <Navbar onMenuToggle={handleMenuToggle} />
+              <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+              <ThemeSelector />
+              <LanguageSwitcher />
+              
+              <main>
+                <Route path="/">
+                  <HeroSection />
+                  <AboutSection />
+                  <SkillsSection />
+                  <ProjectsSection />
+                  <ExperienceSection />
+                  <AchievementsSection />
+                  <ResumeSection />
+                  <ContactSection />
+                </Route>
+                <Route path="/404" component={NotFound} />
+              </main>
+              
+              <Footer />
+              
+              {/* Features */}
+              <AIChatbot />
+              <MusicPlayer />
+            </div>
+          )}
+          <Toaster />
+        </Suspense>
+      </Router>
+    </QueryClientProvider>
   );
 }
 
