@@ -66,19 +66,49 @@ const ResumeSection: React.FC = () => {
           
           <div className="w-full md:w-1/2 resume-preview">
             <Neomorphism className="rounded-xl p-4 aspect-[3/4] relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor" 
-                    className="w-16 h-16 text-primary mb-4 opacity-80 mx-auto"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <h4 className="font-outfit font-medium text-xl mb-2">BhavyaDarda_Resume.pdf</h4>
-                  <p className="text-sm opacity-70">Click the download button to view</p>
+              <div className="absolute inset-0 p-6">
+                <div className="h-full flex flex-col space-y-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-outfit font-medium text-lg">Bhavya Darda</h4>
+                    <span className="text-sm text-primary">Full Stack Developer</span>
+                  </div>
+                  
+                  <div className="flex-1 space-y-4">
+                    <div className="space-y-2">
+                      <h5 className="text-sm font-medium text-primary">Skills</h5>
+                      <div className="flex flex-wrap gap-2">
+                        {['React', 'TypeScript', 'Node.js', 'Python', 'AI/ML'].map((skill, index) => (
+                          <span key={index} className="px-2 py-1 text-xs bg-white/5 rounded-md">{skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h5 className="text-sm font-medium text-primary">Experience</h5>
+                      <div className="space-y-3">
+                        <div className="text-sm">
+                          <div className="font-medium">Senior Developer</div>
+                          <div className="text-xs opacity-70">2021 - Present</div>
+                        </div>
+                        <div className="text-sm">
+                          <div className="font-medium">Full Stack Engineer</div>
+                          <div className="text-xs opacity-70">2019 - 2021</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h5 className="text-sm font-medium text-primary">Education</h5>
+                      <div className="text-sm">
+                        <div className="font-medium">B.Tech in Computer Science</div>
+                        <div className="text-xs opacity-70">2015 - 2019</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center text-sm text-primary/80">
+                    Download for full details
+                  </div>
                 </div>
               </div>
             </Neomorphism>
