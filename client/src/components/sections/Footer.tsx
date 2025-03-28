@@ -69,8 +69,8 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer ref={footerRef} className="relative py-12 mt-20">
-      <Neomorphism className="backdrop-blur-xl bg-background/30 relative overflow-hidden group">
+    <footer ref={footerRef} className="relative">
+      <Neomorphism className="backdrop-blur-xl bg-background/30 relative overflow-hidden group border-t border-white/5">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <motion.div 
           ref={containerRef}
@@ -97,27 +97,33 @@ const Footer: React.FC = () => {
               <h4 className="font-outfit font-medium mb-4 text-lg">{t('footer.quickLinks', 'Quick Links')}</h4>
               <nav className="grid grid-cols-2 gap-3">
                 {footerLinks.map((link, index) => (
-                  <a
+                  <motion.a
                     key={index}
                     href={link.href}
-                    className="text-sm hover:text-primary transition-all duration-300 hover:translate-x-1 transform inline-flex items-center group"
-                    onMouseEnter={(e) => {
-                      gsap.to(e.currentTarget, {
-                        scale: 1.05,
-                        duration: 0.2,
-                        ease: "power2.out"
-                      });
-                    }}
-                    onMouseLeave={(e) => {
-                      gsap.to(e.currentTarget, {
-                        scale: 1,
-                        duration: 0.2,
-                        ease: "power2.out"
-                      });
+                    className="text-sm hover:text-primary transition-all duration-300 inline-flex items-center group relative"
+                    whileHover={{ x: 8, scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ 
+                      duration: 0.3,
+                      delay: index * 0.1,
+                      type: "spring",
+                      stiffness: 200
                     }}
                   >
-                    {link.label}
-                  </a>
+                    <span className="relative">
+                      {link.label}
+                      <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </span>
+                    <motion.span
+                      className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                      animate={{ x: 0 }}
+                      whileHover={{ x: 4 }}
+                    >
+                      →
+                    </motion.span>
+                  </motion.a>
                 ))}
               </nav>
             </div>
@@ -127,16 +133,25 @@ const Footer: React.FC = () => {
               <h4 className="font-outfit font-medium mb-4 text-lg">{t('footer.connect', 'Connect')}</h4>
               <div className="flex gap-4 mb-6">
                 {socialLinks.map((link, index) => (
-                  <a
+                  <motion.a
                     key={index}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-primary transition-all duration-300 p-2 hover:bg-white/5 rounded-lg hover:scale-110 hover:shadow-glow relative overflow-hidden group"
+                    className="relative p-3 rounded-xl overflow-hidden group"
                     aria-label={link.label}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
                   >
-                    {renderSocialIcon(link.icon)}
-                  </a>
+                    <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    <span className="relative z-10 text-white group-hover:text-primary transition-colors duration-300">
+                      {renderSocialIcon(link.icon)}
+                    </span>
+                    <span className="absolute inset-0 border border-primary/20 rounded-xl group-hover:border-primary/50 transition-colors duration-300"></span>
+                  </motion.a>
                 ))}
               </div>
               <a
@@ -158,20 +173,40 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-8 border-t border-white/10 relative">
+          <div className="mt-12 pt-8 relative">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
             <motion.div 
-              className="flex flex-col md:flex-row justify-between items-center gap-4"
+              className="flex flex-col md:flex-row justify-between items-center gap-4 pb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <p className="text-sm opacity-70">
+              <motion.p 
+                className="text-sm text-white/70 hover:text-white/90 transition-colors duration-300"
+                whileHover={{ scale: 1.02 }}
+              >
                 &copy; {currentYear} {t('footer.rights', 'Bhavya Darda. All rights reserved.')}
-              </p>
-              <p className="text-sm opacity-70">
-                {t('footer.madeWith', 'Made with')} ❤️ {t('footer.using', 'using React & TypeScript')}
-              </p>
+              </motion.p>
+              <motion.p 
+                className="text-sm text-white/70 hover:text-white/90 transition-colors duration-300 flex items-center gap-2"
+                whileHover={{ scale: 1.02 }}
+              >
+                {t('footer.madeWith', 'Made with')} 
+                <motion.span
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 10, -10, 0]
+                  }}
+                  transition={{ 
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatDelay: 2
+                  }}
+                >
+                  ❤️
+                </motion.span> 
+                {t('footer.using', 'using React & TypeScript')}
+              </motion.p>
             </motion.div>
           </div>
         </motion.div>
