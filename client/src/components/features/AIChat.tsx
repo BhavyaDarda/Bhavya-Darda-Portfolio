@@ -1,4 +1,7 @@
-const generateResponse = (question: string, t: any) => {
+const generateResponse = (question: string, t: any): string => {
+  if (!question?.trim()) {
+    return t('chatbot.emptyQuestion', 'Please ask a question.');
+  }
   // Find matching patterns and responses
   for (const pattern of CHAT_PATTERNS) {
     if (pattern.patterns.some(p => question.toLowerCase().includes(p))) {
