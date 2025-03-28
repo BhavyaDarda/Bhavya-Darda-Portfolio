@@ -4,7 +4,6 @@ import { aboutInfo } from '../../data/portfolioData';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 
 const HeroSection: React.FC = () => {
   const exploreBtnRef = useMagnetic<HTMLAnchorElement>();
