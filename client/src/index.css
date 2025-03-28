@@ -418,6 +418,32 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Prevent horizontal scroll */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Container width control */
+.container {
+  width: min(100% - 2rem, 1280px);
+  margin-inline: auto;
+  padding-inline: max(1rem, 3vw);
+}
+
+/* Handle overflow in flex items */
+.flex {
+  flex-wrap: wrap;
+}
+
+/* Responsive text handling */
+* {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
 /* Custom cursor */
 @media (max-width: 768px) {
   body {
