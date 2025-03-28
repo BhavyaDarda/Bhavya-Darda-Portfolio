@@ -68,8 +68,12 @@ function App() {
               
               <Navbar onMenuToggle={handleMenuToggle} />
               <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-              <ThemeSelector />
-              <LanguageSwitcher />
+              
+              {/* UI Controls */}
+              <div className="fixed z-40 top-6 right-6 flex items-center space-x-4">
+                <ThemeSelector />
+                <LanguageSwitcher />
+              </div>
               
               <main>
                 <Route path="/">

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useThemeStore } from '../lib/theme';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const CustomCursor: React.FC = () => {
+const CustomCursor: React.FC = () => {
   const cursorOuterRef = useRef<HTMLDivElement>(null);
   const cursorInnerRef = useRef<HTMLDivElement>(null);
   const cursorTextRef = useRef<HTMLDivElement>(null);
@@ -12,6 +12,7 @@ export const CustomCursor: React.FC = () => {
   const [isPointer, setIsPointer] = useState<boolean>(false);
   const [isClick, setIsClick] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   
   // Get theme-based colors
   const getCursorColor = () => {
@@ -25,21 +26,19 @@ export const CustomCursor: React.FC = () => {
   
   const getCursorGlow = () => {
     switch (currentTheme) {
-      case 'emerald': return '0 0 10px rgba(16, 185, 129, 0.7)';
-      case 'platinum': return '0 0 10px rgba(229, 229, 229, 0.7)';
+      case 'emerald': return '0 0 15px rgba(16, 185, 129, 0.8)';
+      case 'platinum': return '0 0 15px rgba(229, 229, 229, 0.8)';
       case 'gold':
-      default: return '0 0 10px rgba(212, 175, 55, 0.7)';
+      default: return '0 0 15px rgba(212, 175, 55, 0.8)';
     }
   };
   
   useEffect(() => {
-    const cursorOuter = cursorOuterRef.current;
-    const cursorInner = cursorInnerRef.current;
-    const cursorTextElement = cursorTextRef.current;
-    
-    if (!cursorOuter || !cursorInner || !cursorTextElement) return;
-    
-    // Main cursor update function with smoothing
+    // Show cursor only after a small delay to ensure it loads properly
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1000);
+
     const updateCursor = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -72,17 +71,30 @@ export const CustomCursor: React.FC = () => {
         target.tagName === 'BUTTON' ||
         target.closest('a') ||
         target.closest('button') ||
+        target.classList.contains('cursor-pointer') ||
         target.classList.contains('magnetic') ||
         getComputedStyle(target).cursor === 'pointer'
       ) {
         setIsPointer(true);
+      } else {
+        setIsPointer(false);
       }
     };
     
-    const handleMouseOut = () => {
-      setIsHovering(false);
-      setIsPointer(false);
-      setCursorText('');
+    const handleMouseOut = (e: MouseEvent) => {
+      const relatedTarget = e.relatedTarget as HTMLElement;
+      if (!relatedTarget || 
+          (relatedTarget.tagName !== 'A' && 
+           relatedTarget.tagName !== 'BUTTON' && 
+           !relatedTarget.closest('a') && 
+           !relatedTarget.closest('button') && 
+           !relatedTarget.classList.contains('cursor-pointer') &&
+           !relatedTarget.classList.contains('magnetic') &&
+           getComputedStyle(relatedTarget).cursor !== 'pointer')) {
+        setIsHovering(false);
+        setIsPointer(false);
+        setCursorText('');
+      }
     };
     
     const handleMouseDown = () => {
@@ -103,6 +115,7 @@ export const CustomCursor: React.FC = () => {
     document.body.classList.add('cursor-none');
     
     return () => {
+      clearTimeout(timer);
       document.removeEventListener('mousemove', updateCursor);
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
@@ -143,17 +156,28 @@ export const CustomCursor: React.FC = () => {
   const cursorColor = getCursorColor();
   const cursorGlow = getCursorGlow();
   
+  if (!isVisible) {
+    return null; // Don't render until ready
+  }
+  
   return (
     <>
       {/* Outer ring cursor */}
       <motion.div
         ref={cursorOuterRef}
-        className="fixed pointer-events-none z-[100] transform -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center"
-        style={{ mixBlendMode: 'difference' }}
-        variants={cursorVariants}
-        animate="default"
+        className="fixed pointer-events-none z-[100] top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center will-change-transform"
+        style={{ 
+          top: mousePosition.y,
+          left: mousePosition.x,
+          mixBlendMode: 'difference'
+        }}
         initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          x: 0,
+          y: 0
+        }}
         transition={{ duration: 0.4 }}
       >
         <motion.div 
@@ -190,18 +214,24 @@ export const CustomCursor: React.FC = () => {
       {/* Inner dot cursor */}
       <motion.div
         ref={cursorInnerRef}
-        className="fixed pointer-events-none z-[101] rounded-full transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
-        variants={dotVariants}
+        className="fixed pointer-events-none z-[101] rounded-full top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 will-change-transform"
+        style={{ 
+          top: mousePosition.y,
+          left: mousePosition.x
+        }}
         animate={{
-          ...dotVariants.default,
           width: isHovering ? '0' : isPointer ? '8px' : '5px',
           height: isHovering ? '0' : isPointer ? '8px' : '5px',
           backgroundColor: cursorColor,
           opacity: isHovering ? 0 : 1,
-          boxShadow: isPointer ? cursorGlow : 'none'
+          boxShadow: isPointer ? cursorGlow : 'none',
+          x: 0,
+          y: 0
         }}
         transition={{ duration: 0.1 }}
       />
+      
+      {/* Cursor styles are added in index.css */}
     </>
   );
 };

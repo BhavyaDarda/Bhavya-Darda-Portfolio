@@ -299,3 +299,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Custom cursor */
+@media (max-width: 768px) {
+  body {
+    cursor: auto !important;
+  }
+}
+
+@media (min-width: 769px) {
+  body.cursor-none,
+  body.cursor-none * {
+    cursor: none !important;
+  }
+}
