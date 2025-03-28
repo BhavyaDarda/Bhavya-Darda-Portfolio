@@ -70,7 +70,7 @@ function App() {
               <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
               
               {/* UI Controls */}
-              <div className="fixed z-40 top-6 right-6 flex items-center space-x-4">
+              <div className="fixed z-40 bottom-8 right-8 flex flex-col space-y-4">
                 <ThemeSelector />
                 <LanguageSwitcher />
               </div>

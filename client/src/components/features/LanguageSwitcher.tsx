@@ -134,12 +134,12 @@ const LanguageSwitcher = () => {
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 text-white bg-black/20 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 hover:bg-black/30 transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="flex items-center space-x-2 text-white bg-black/30 backdrop-blur-md border border-white/10 rounded-full px-3 py-2 hover:bg-black/40 transition-all duration-300 shadow-lg hover:shadow-xl"
       >
         <GlobeIcon className="h-4 w-4" />
-        <span className="hidden md:inline-block">{currentLanguage.flag} {currentLanguage.name}</span>
+        <span className="hidden md:inline-block text-sm">{currentLanguage.flag} {currentLanguage.name}</span>
         <span className="inline-block md:hidden">{currentLanguage.flag}</span>
-        <ChevronDownIcon className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDownIcon className={`h-3 w-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>
