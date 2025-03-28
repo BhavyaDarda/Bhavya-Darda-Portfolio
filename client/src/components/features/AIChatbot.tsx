@@ -207,8 +207,30 @@ const AIChatbot = () => {
   const { currentTheme } = useThemeStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize messages with translated welcome message
+  // Initialize messages with translated welcome message and persist messages
   useEffect(() => {
+    // Try to load previous messages from localStorage
+    const savedMessages = localStorage.getItem('chatMessages');
+    
+    if (savedMessages) {
+      try {
+        // Parse saved messages and fix timestamps (they're stored as strings)
+        const parsedMessages = JSON.parse(savedMessages).map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        
+        if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
+          setMessages(parsedMessages);
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing saved messages:', error);
+        // Continue with default messages if there's an error
+      }
+    }
+    
+    // Set default welcome message if no saved messages
     const initialMsg = INITIAL_MESSAGES.map(msg => ({
       ...msg,
       text: msg.sender === 'bot' ? t('chatbot.welcome') : msg.text
@@ -241,22 +263,40 @@ const AIChatbot = () => {
       timestamp: new Date()
     };
     
-    setMessages(prev => [...prev, userMessage]);
+    // Update messages with user message
+    const messagesWithUser = [...messages, userMessage];
+    setMessages(messagesWithUser);
     setInputValue('');
     setIsTyping(true);
+    
+    // Save messages after adding user message
+    try {
+      localStorage.setItem('chatMessages', JSON.stringify(messagesWithUser));
+    } catch (error) {
+      console.error('Error saving chat messages:', error);
+    }
 
     // Simulate AI thinking and typing
     setTimeout(() => {
       // Add bot response
       const botMessage: Message = {
-        id: messages.length + 2,
+        id: messagesWithUser.length + 1,
         text: generateResponse(inputValue, t),
         sender: 'bot',
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, botMessage]);
+      // Update messages with bot response
+      const updatedMessages = [...messagesWithUser, botMessage];
+      setMessages(updatedMessages);
       setIsTyping(false);
+      
+      // Save complete conversation to localStorage
+      try {
+        localStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
+      } catch (error) {
+        console.error('Error saving chat messages:', error);
+      }
     }, 1500);
   };
 
@@ -275,21 +315,39 @@ const AIChatbot = () => {
       timestamp: new Date()
     };
     
-    setMessages(prev => [...prev, userMessage]);
+    // Update messages with user's suggested question
+    const messagesWithUser = [...messages, userMessage];
+    setMessages(messagesWithUser);
     setIsTyping(true);
+    
+    // Save messages after adding user's question
+    try {
+      localStorage.setItem('chatMessages', JSON.stringify(messagesWithUser));
+    } catch (error) {
+      console.error('Error saving chat messages:', error);
+    }
 
     // Simulate AI thinking and typing
     setTimeout(() => {
       // Add bot response
       const botMessage: Message = {
-        id: messages.length + 2,
+        id: messagesWithUser.length + 1,
         text: generateResponse(question, t),
         sender: 'bot',
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, botMessage]);
+      // Update messages with bot response
+      const updatedMessages = [...messagesWithUser, botMessage];
+      setMessages(updatedMessages);
       setIsTyping(false);
+      
+      // Save complete conversation to localStorage
+      try {
+        localStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
+      } catch (error) {
+        console.error('Error saving chat messages:', error);
+      }
     }, 1500);
   };
 
@@ -402,12 +460,29 @@ const AIChatbot = () => {
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsOpen(false)}
-                className="rounded-full p-2 hover:bg-white/10 transition-colors"
-              >
-                <XIcon className="h-5 w-5 text-white" />
-              </button>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => {
+                    // Clear chat history
+                    const initialMsg = INITIAL_MESSAGES.map(msg => ({
+                      ...msg,
+                      text: msg.sender === 'bot' ? t('chatbot.welcome') : msg.text
+                    }));
+                    setMessages(initialMsg);
+                    localStorage.removeItem('chatMessages');
+                  }}
+                  className="text-xs bg-black/30 hover:bg-primary/20 px-2 py-1 rounded-md text-white/70 transition-colors"
+                  title="Clear chat history"
+                >
+                  Clear
+                </button>
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full p-2 hover:bg-white/10 transition-colors"
+                >
+                  <XIcon className="h-5 w-5 text-white" />
+                </button>
+              </div>
             </div>
 
             {/* Chat messages */}

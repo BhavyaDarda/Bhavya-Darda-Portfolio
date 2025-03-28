@@ -277,17 +277,17 @@ const CustomCursor: React.FC = () => {
         <motion.div 
           className="flex items-center justify-center backdrop-blur-[2px] gpu-accelerated"
           style={{
-            borderRadius: isHovering ? '50%' : '8px',
-            clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
+            borderRadius: isHovering ? '50%' : '50%', // Always use rounded style for traditional cursor shape
+            clipPath: isPointer ? 'none' : 'none' // Remove diamond clip-path
           }}
           animate={{
-            width: isHovering ? '130px' : isPointer ? '52px' : '44px',
-            height: isHovering ? '130px' : isPointer ? '52px' : '44px',
+            width: isHovering ? '130px' : isPointer ? '40px' : '32px', 
+            height: isHovering ? '130px' : isPointer ? '40px' : '32px',
             backgroundColor: isHovering ? `${cursorColor}15` : 'rgba(0, 0, 0, 0.001)',
             borderColor: cursorColor,
             borderWidth: isClick ? '1px' : '2px',
-            boxShadow: isPointer ? cursorGlow : 'none',
-            rotate: isPointer ? (isMoving ? mouseSpeed * 45 : 45) : isMoving ? mouseSpeed * 10 : 0,
+            boxShadow: cursorGlow, // Always apply glow for premium effect
+            rotate: 0, // Remove rotation for traditional cursor shape
           }}
           transition={{ 
             duration: 0.2,
@@ -301,17 +301,17 @@ const CustomCursor: React.FC = () => {
             className="absolute z-0 gpu-accelerated"
             style={{
               backgroundColor: 'rgba(0, 0, 0, 0.001)', // Set initial backgroundColor to avoid animation warning
-              borderRadius: isHovering ? '50%' : '6px',
-              clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
+              borderRadius: isHovering ? '50%' : '50%', // Always use rounded style
+              clipPath: 'none' // Remove diamond clip-path
             }}
             animate={{
-              width: isHovering ? '128px' : isPointer ? '50px' : '40px',
-              height: isHovering ? '128px' : isPointer ? '50px' : '40px',
+              width: isHovering ? '128px' : isPointer ? '36px' : '28px',
+              height: isHovering ? '128px' : isPointer ? '36px' : '28px',
               opacity: isClick ? 0.8 : 0.4,
               borderColor: cursorColor,
               borderWidth: '1px',
               scale: isClick ? 0.9 : 1,
-              rotate: isPointer ? (isMoving ? mouseSpeed * 45 : 45) : 0,
+              rotate: 0, // Remove rotation for traditional cursor shape
             }}
             transition={{ duration: 0.2 }}
           />
@@ -342,17 +342,17 @@ const CustomCursor: React.FC = () => {
         style={{ 
           x: dotX, 
           y: dotY,
-          borderRadius: isPointer ? '0' : '50%',
-          clipPath: isPointer ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none'
+          borderRadius: '50%', // Always circular for traditional cursor
+          clipPath: 'none' // Remove diamond shape
         }}
         animate={{
-          width: isHovering ? '0' : isPointer ? '12px' : '6px',
-          height: isHovering ? '0' : isPointer ? '12px' : '6px',
+          width: isHovering ? '0' : isPointer ? '10px' : '6px',
+          height: isHovering ? '0' : isPointer ? '10px' : '6px',
           backgroundColor: cursorColor,
           opacity: isHovering ? 0 : 1,
-          boxShadow: isPointer ? cursorGlow : 'none',
+          boxShadow: cursorGlow, // Always apply glow for premium effect
           scale: isClick ? 0.5 : 1,
-          rotate: isPointer ? 45 : 0
+          rotate: 0 // Remove rotation for traditional cursor
         }}
         transition={{ 
           duration: 0.08,
