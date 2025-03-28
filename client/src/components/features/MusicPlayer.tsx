@@ -16,6 +16,7 @@ import {
   LoaderIcon
 } from 'lucide-react';
 import { useThemeStore } from '../../lib/theme';
+import { createAudioBlobUrl } from '../../lib/audio';
 
 // Using WAV format for better browser compatibility
 // Creating real music tracks using the Web Audio API on-the-fly instead of relying on external resources
