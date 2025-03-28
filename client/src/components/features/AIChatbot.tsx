@@ -217,7 +217,7 @@ const AIChatbot = () => {
       {/* Chat toggle button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-8 right-8 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-lg ${getButtonBgColor()} hover:shadow-xl transition-all duration-300`}
+        className={`fixed bottom-8 left-8 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-lg ${getButtonBgColor()} hover:shadow-xl transition-all duration-300`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         data-cursor="Chat"
@@ -233,7 +233,7 @@ const AIChatbot = () => {
             animate="visible"
             exit="exit"
             variants={chatContainerVariants}
-            className="fixed bottom-8 right-8 z-50 w-full sm:w-96 h-[500px] rounded-2xl shadow-2xl overflow-hidden flex flex-col bg-black/50 backdrop-blur-xl border border-white/10"
+            className="fixed bottom-8 left-8 sm:left-24 z-50 w-full sm:w-96 h-[500px] rounded-2xl shadow-2xl overflow-hidden flex flex-col bg-black/50 backdrop-blur-xl border border-white/10"
           >
             {/* Chat header */}
             <div className="flex items-center justify-between p-4 bg-black/40 border-b border-white/10">

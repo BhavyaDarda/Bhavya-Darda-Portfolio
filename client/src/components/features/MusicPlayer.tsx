@@ -169,7 +169,7 @@ const MusicPlayer = () => {
       {/* Music toggle button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-8 left-8 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-lg ${getButtonBg()} hover:shadow-xl transition-all duration-300`}
+        className={`fixed bottom-28 left-8 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-lg ${getButtonBg()} hover:shadow-xl transition-all duration-300`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         data-cursor="Music"
