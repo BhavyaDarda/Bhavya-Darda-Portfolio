@@ -26,7 +26,7 @@ import Footer from "./components/sections/Footer";
 // Features
 import LanguageSwitcher from "./components/features/LanguageSwitcher";
 import AIChatbot from "./components/features/AIChatbot";
-import MusicPlayer from "./components/features/MusicPlayer";
+
 
 // Pages
 import NotFound from "./pages/not-found";
@@ -38,14 +38,14 @@ function App() {
   useEffect(() => {
     // Apply default theme (gold)
     applyTheme('gold');
-    
+
     // Disable scrolling when menu is open
     if (menuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -65,16 +65,16 @@ function App() {
             <div className="relative">
               <CustomCursor />
               <ParticleBackground />
-              
+
               <Navbar onMenuToggle={handleMenuToggle} />
               <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-              
+
               {/* UI Controls */}
               <div className="fixed z-40 bottom-8 right-8 flex flex-col space-y-4">
                 <ThemeSelector />
                 <LanguageSwitcher />
               </div>
-              
+
               <main>
                 <Route path="/">
                   <HeroSection />
@@ -88,12 +88,11 @@ function App() {
                 </Route>
                 <Route path="/404" component={NotFound} />
               </main>
-              
+
               <Footer />
-              
+
               {/* Features */}
               <AIChatbot />
-              <MusicPlayer />
             </div>
           )}
           <Toaster />

@@ -109,13 +109,5 @@ export default {
     "includeExperience": "Include Experience",
     "includeSkills": "Include Skills"
   },
-  // Music player
-  "music": {
-    "title": "Background Ambience",
-    "play": "Play",
-    "pause": "Pause",
-    "next": "Next",
-    "previous": "Previous",
-    "volume": "Volume"
-  }
+  
 };
