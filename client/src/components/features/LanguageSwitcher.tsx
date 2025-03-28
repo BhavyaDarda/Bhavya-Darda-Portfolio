@@ -52,11 +52,17 @@ const LanguageSwitcher = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [languageChangeEffect, setLanguageChangeEffect] = useState(false);
 
-  // Sync state with i18n
+  // Sync state with i18n and update chatbot language
   useEffect(() => {
     const foundLang = languages.find(lang => lang.code === i18n.language);
     if (foundLang && foundLang.code !== currentLanguage.code) {
       setCurrentLanguage(foundLang);
+      
+      // Update HTML lang attribute
+      document.documentElement.lang = foundLang.code;
+      
+      // Save language preference
+      localStorage.setItem('preferredLanguage', foundLang.code);
     }
   }, [i18n.language]);
 
