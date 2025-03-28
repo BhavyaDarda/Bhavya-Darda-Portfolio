@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer ref={footerRef} className="relative mt-auto">
+    <footer ref={footerRef} className="relative">
       <Neomorphism className="backdrop-blur-xl bg-background/30 relative overflow-hidden group border-t border-white/5">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <motion.div 
