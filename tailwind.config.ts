@@ -5,6 +5,12 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Outfit', 'Poppins', 'sans-serif'],
+        outfit: ['Outfit', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        space: ['Space Grotesk', 'sans-serif'],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

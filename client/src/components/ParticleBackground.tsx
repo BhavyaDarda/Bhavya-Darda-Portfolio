@@ -115,7 +115,7 @@ class ParticleSystem {
       depthTest: false,
       transparent: true,
       vertexColors: true
-    });
+    }) as ShaderMaterialWithUniforms;
     
     this.particleMaterial = shaderMaterial;
     this.particles = new THREE.Points(this.particleGeometry, this.particleMaterial);
