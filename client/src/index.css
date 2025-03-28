@@ -30,15 +30,93 @@
     --secondary: 216 69% 21%;
     --secondary-foreground: 0 0% 90%;
 
+/* Device Optimization */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Dynamic Viewport Height */
+:root {
+  --vh: 1vh;
+}
+
+/* Responsive Typography */
+html {
+  font-size: clamp(14px, 1vw + 0.5rem, 18px);
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Responsive Container */
+.container {
+  width: 100%;
+  max-width: min(100% - 2rem, 1280px);
+  margin-inline: auto;
+  padding-inline: max(1rem, 3vw);
+}
+
+/* Responsive Images */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Resume Preview Optimization */
 .resume-preview {
   perspective: 1000px;
   transform-style: preserve-3d;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
 }
 
-.resume-preview iframe {
+.resume-preview embed,
+.resume-preview iframe,
+.resume-preview object {
   transform: translateZ(0);
   will-change: transform;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  height: 100%;
+  min-height: min(600px, 90vh);
+  background: var(--background);
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease-out;
+}
+
+/* Orientation Support */
+@media screen and (orientation: portrait) {
+  .resume-preview {
+    max-height: 70vh;
+  }
+}
+
+/* Dark Mode OLED Optimization */
+@media screen and (display-mode: standalone) and (prefers-color-scheme: dark) {
+  :root {
+    --background: 0 0% 0%;
+  }
+}
+
+/* High Refresh Rate Optimization */
+@media (prefers-reduced-data: reduce) {
+  * {
+    background-image: none !important;
+  }
 }
 
 
