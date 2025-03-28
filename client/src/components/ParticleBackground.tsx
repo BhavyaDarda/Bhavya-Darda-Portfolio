@@ -184,7 +184,7 @@ class LuxuryBackground {
     
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3)); // Renamed to avoid conflict
     
     // Create shader material for high-quality points
     const pointMaterial = new THREE.ShaderMaterial({
@@ -194,13 +194,13 @@ class LuxuryBackground {
       },
       vertexShader: `
         attribute float size;
-        attribute vec3 color;
+        attribute vec3 aColor; // Renamed to avoid conflict with Three.js built-in attributes
         uniform float time;
         uniform float pixelRatio;
         varying vec3 vColor;
         
         void main() {
-          vColor = color;
+          vColor = aColor;
           
           // Animate position based on sine waves
           vec3 pos = position;
@@ -720,7 +720,7 @@ class LuxuryBackground {
   }): void {
     // Get point geometry and colors
     const pointsGeometry = this.flyingLightPoints.geometry;
-    const colors = pointsGeometry.attributes.color as THREE.BufferAttribute;
+    const colors = pointsGeometry.attributes.aColor as THREE.BufferAttribute; // Updated to match our renamed attribute
     
     // Parse theme colors
     const primaryColor = new THREE.Color(themeColors.primary);
