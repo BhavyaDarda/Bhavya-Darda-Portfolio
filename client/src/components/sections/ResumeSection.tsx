@@ -68,10 +68,10 @@ const ResumeSection: React.FC = () => {
             <Neomorphism className="rounded-xl p-4 relative overflow-hidden">
               <div className="w-full aspect-[3/4] relative">
                 <iframe
-                  src="/resume.pdf#view=FitH"
+                  src="/resume.pdf"
                   className="absolute inset-0 w-full h-full rounded-lg bg-background"
                   style={{ minHeight: '600px' }}
-                  sandbox="allow-same-origin"
+                  sandbox="allow-same-origin allow-scripts"
                 />
               </div>
             </Neomorphism>
