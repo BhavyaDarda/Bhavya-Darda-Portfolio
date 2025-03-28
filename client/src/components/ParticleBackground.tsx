@@ -1,11 +1,18 @@
-import React, { useRef, useEffect, useMemo } from 'react';
-import * as THREE from 'three';
-import { useFrame, Canvas } from '@react-three/fiber';
+import React, { useEffect, useRef } from 'react';
 import { useThemeStore } from '../lib/theme';
 
-// Memoized Particles component to improve performance and prevent unnecessary re-renders
-const Particles = ({ count = 3000 }) => {
-  const points = useRef<THREE.Points>(null);
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  opacity: number;
+}
+
+const ParticleBackground: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<Particle[]>([]);
   const { currentTheme } = useThemeStore();
   
   // Get particle color based on theme
@@ -17,86 +24,106 @@ const Particles = ({ count = 3000 }) => {
       default: return '#d4af37';
     }
   };
-  
-  // Create particles geometry using useMemo to prevent recreating on every render
-  const particlesGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry();
-    const posArray = new Float32Array(count * 3);
-    
-    for (let i = 0; i < count * 3; i++) {
-      // Random positions in a sphere
-      posArray[i] = (Math.random() - 0.5) * 5;
-    }
-    
-    geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    return geometry;
-  }, [count]);
-  
-  // Create material using useMemo to prevent recreating on every render
-  const particlesMaterial = useMemo(() => {
-    return new THREE.PointsMaterial({
-      size: 0.015,
-      sizeAttenuation: true,
-      color: new THREE.Color(getParticleColor()),
-      transparent: true,
-      opacity: 0.8,
-    });
-  }, [currentTheme]); // Recreate material only when theme changes
-  
-  // Apply slow rotation animation
-  useFrame(() => {
-    if (points.current) {
-      points.current.rotation.x += 0.0002;
-      points.current.rotation.y += 0.0002;
-    }
-  });
-  
-  // Update material color when theme changes
+
   useEffect(() => {
-    if (particlesMaterial) {
-      particlesMaterial.color.set(getParticleColor());
+    // Initialize particles
+    const particleCount = 100;
+    particlesRef.current = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      particlesRef.current.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: Math.random() * 3 + 1,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5,
+        opacity: Math.random() * 0.5 + 0.3
+      });
     }
-  }, [currentTheme, particlesMaterial]);
-  
+    
+    // Animation setup
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Set canvas dimensions
+    const handleResize = () => {
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    
+    // Animation loop
+    let animationId: number;
+    
+    const animate = () => {
+      if (!canvas || !ctx) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw and update particles
+      particlesRef.current.forEach((particle, index) => {
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `${getParticleColor()}${Math.floor(particle.opacity * 255).toString(16).padStart(2, '0')}`;
+        ctx.fill();
+        
+        // Draw connections (only with nearby particles to improve performance)
+        for (let j = index + 1; j < particlesRef.current.length; j++) {
+          const otherParticle = particlesRef.current[j];
+          const dx = particle.x - otherParticle.x;
+          const dy = particle.y - otherParticle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 150) {
+            ctx.beginPath();
+            ctx.strokeStyle = `${getParticleColor()}${Math.floor((particle.opacity * 0.2) * 255).toString(16).padStart(2, '0')}`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(otherParticle.x, otherParticle.y);
+            ctx.stroke();
+          }
+        }
+        
+        // Update particle position
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > canvas.width) {
+          particle.speedX = -particle.speedX;
+        }
+        
+        if (particle.y < 0 || particle.y > canvas.height) {
+          particle.speedY = -particle.speedY;
+        }
+      });
+      
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationId);
+    };
+  }, [currentTheme]);
+
   return (
-    <points ref={points} geometry={particlesGeometry} material={particlesMaterial} />
-  );
-};
-
-// Error boundary for Canvas component to prevent entire app from crashing
-class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
-  constructor(props: {children: React.ReactNode}) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <div className="fixed inset-0 -z-10 bg-background"></div>;
-    }
-
-    return this.props.children;
-  }
-}
-
-// Main ParticleBackground component
-const ParticleBackground: React.FC = () => {
-  return (
-    <ErrorBoundary>
-      <div id="particles-js" className="fixed inset-0 -z-10">
-        <Canvas 
-          camera={{ position: [0, 0, 1], fov: 75 }}
-          style={{ background: 'transparent' }}
-        >
-          <ambientLight intensity={0.5} />
-          <Particles />
-        </Canvas>
-      </div>
-    </ErrorBoundary>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 -z-10"
+      style={{ background: 'transparent' }}
+    />
   );
 };
 
