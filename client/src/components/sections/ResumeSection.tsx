@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ResumeSection: React.FC = () => {
   const downloadBtnRef = useMagnetic<HTMLAnchorElement>({ strength: 0.15 });
-
+  
   useEffect(() => {
     // GSAP animations with ScrollTrigger
     gsap.from('.resume-content', {
@@ -21,7 +21,7 @@ const ResumeSection: React.FC = () => {
         toggleActions: 'play none none none'
       }
     });
-
+    
     gsap.from('.resume-preview', {
       opacity: 0,
       x: 50,
@@ -33,7 +33,7 @@ const ResumeSection: React.FC = () => {
       }
     });
   }, []);
-
+  
   return (
     <section id="resume" className="relative py-20 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="container mx-auto relative z-10">
@@ -41,11 +41,11 @@ const ResumeSection: React.FC = () => {
           <div className="w-full md:w-1/2 resume-content">
             <h2 className="text-xl font-space uppercase tracking-wider text-primary mb-2">My Resume</h2>
             <h3 className="text-3xl md:text-4xl font-outfit font-semibold mb-6">Download My CV</h3>
-
+            
             <p className="opacity-80 mb-8 text-sm md:text-base">
               For a comprehensive overview of my skills, experience, and qualifications, download my resume. It includes detailed information about my professional background, technical expertise, and achievements.
             </p>
-
+            
             <a 
               href="#"
               ref={downloadBtnRef}
@@ -63,21 +63,19 @@ const ResumeSection: React.FC = () => {
               </svg>
             </a>
           </div>
-
-          <div className="w-full lg:w-1/2 md:sticky md:top-4 resume-preview">
-            <Neomorphism className="rounded-xl p-2 sm:p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
-              <div className="w-full aspect-[3/4] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300 motion-safe:hover:scale-[1.02] motion-reduce:transform-none">
+          
+          <div className="w-full md:w-1/2 resume-preview">
+            <Neomorphism className="rounded-xl p-4 relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
+              <div className="w-full aspect-[3/4] relative shadow-2xl transition-transform hover:scale-[1.02] duration-300">
                 <embed
                   src="/resume.pdf#view=FitH"
                   type="application/pdf"
-                  className="absolute inset-0 w-full h-full rounded-lg bg-background border border-zinc-800/50 hover:border-primary/50 transition-colors"
+                  className="absolute inset-0 w-full h-full rounded-lg bg-background border border-zinc-800/50"
                   style={{ 
-                    minHeight: 'min(600px, 70vh)',
-                    maxHeight: '90vh',
+                    minHeight: '600px',
+                    WebkitBackfaceVisibility: 'hidden',
                     MozBackfaceVisibility: 'hidden',
-                    backfaceVisibility: 'hidden',
-                    transform: 'translate3d(0,0,0)',
-                    WebkitBackfaceVisibility: 'hidden'
+                    backfaceVisibility: 'hidden'
                   }}
                 />
               </div>
