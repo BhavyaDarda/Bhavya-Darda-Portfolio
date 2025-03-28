@@ -80,9 +80,9 @@ const LanguageSwitcher = () => {
   const dropdownVariants = {
     hidden: { 
       opacity: 0, 
-      y: -10,
+      y: 10,
       scale: 0.95,
-      transformOrigin: "top right"
+      transformOrigin: "bottom right"
     },
     visible: { 
       opacity: 1, 
@@ -95,7 +95,7 @@ const LanguageSwitcher = () => {
     },
     exit: { 
       opacity: 0, 
-      y: -10,
+      y: 10,
       scale: 0.95,
       transition: {
         duration: 0.15,
@@ -149,7 +149,7 @@ const LanguageSwitcher = () => {
             animate="visible"
             exit="exit"
             variants={dropdownVariants}
-            className="absolute right-0 mt-2 w-64 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl p-2 overflow-hidden"
+            className="absolute bottom-full mb-2 right-0 w-64 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl p-2 overflow-hidden"
           >
             <div className="divide-y divide-white/10">
               {languages.map((language, index) => (

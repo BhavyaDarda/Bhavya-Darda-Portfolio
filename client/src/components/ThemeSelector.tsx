@@ -33,7 +33,7 @@ const ThemeSelector: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-64 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl p-2 overflow-hidden"
+            className="absolute bottom-full mb-2 right-0 w-64 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl p-2 overflow-hidden"
           >
             <div className="divide-y divide-white/10">
               {themeOptions.map((theme, index) => (

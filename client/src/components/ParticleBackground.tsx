@@ -21,13 +21,20 @@ class ParticleSystem {
   private themeColor: string;
   private mouseX: number = 0;
   private mouseY: number = 0;
-  private windowHalfX: number = window.innerWidth / 2;
-  private windowHalfY: number = window.innerHeight / 2;
+  private windowHalfX: number;
+  private windowHalfY: number;
   private clock: THREE.Clock;
 
   constructor(container: HTMLElement, themeColor: string) {
+    // Initialize properties
     this.themeColor = themeColor;
     this.clock = new THREE.Clock();
+    
+    // Initialize with safe window dimensions
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const height = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    this.windowHalfX = width / 2;
+    this.windowHalfY = height / 2;
     
     // Create scene
     this.scene = new THREE.Scene();
@@ -35,7 +42,7 @@ class ParticleSystem {
     // Create camera
     this.camera = new THREE.PerspectiveCamera(
       75, 
-      window.innerWidth / window.innerHeight, 
+      width / height, 
       0.1, 
       2000
     );
@@ -44,19 +51,23 @@ class ParticleSystem {
     // Create renderer
     this.renderer = new THREE.WebGLRenderer({ 
       antialias: true,
-      alpha: true
+      alpha: true,
+      powerPreference: 'high-performance'
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    this.renderer.setSize(width, height);
+    this.renderer.setPixelRatio(Math.min(
+      typeof window !== 'undefined' ? window.devicePixelRatio : 1, 
+      2
+    ));
+    
     container.appendChild(this.renderer.domElement);
     
-    // Create particles with more interesting distribution patterns
+    // Create particles
     this.particleGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(this.particleCount * 3);
     const colors = new Float32Array(this.particleCount * 3);
     const sizes = new Float32Array(this.particleCount);
-    
-    const color = new THREE.Color(this.themeColor);
     
     // Create a mix of different distribution patterns
     for (let i = 0; i < this.particleCount; i++) {
@@ -353,7 +364,6 @@ class ParticleSystem {
     // Update particles colors with preserved distribution patterns
     const colors = this.particleGeometry.attributes.color as THREE.BufferAttribute;
     const positions = this.particleGeometry.attributes.position as THREE.BufferAttribute;
-    const threeColor = new THREE.Color(color);
     
     for (let i = 0; i < this.particleCount; i++) {
       // Get position data for the current particle
@@ -410,7 +420,6 @@ class ParticleSystem {
     }
     
     // Create dynamic rotation patterns
-    // Slower base rotation
     const baseRotationSpeed = 0.00005;
     this.particles.rotation.x += baseRotationSpeed;
     this.particles.rotation.y += baseRotationSpeed * 2;
@@ -489,25 +498,33 @@ const ParticleBackground: React.FC = () => {
   };
   
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Only initialize if the component is mounted and window is available
+    if (!containerRef.current || typeof window === 'undefined') return;
     
-    try {
-      // Initialize particle system
-      const color = getParticleColor();
-      particleSystemRef.current = new ParticleSystem(containerRef.current, color);
-      particleSystemRef.current.start();
-      
-      // Cleanup
-      return () => {
-        if (particleSystemRef.current) {
+    // Add a small delay to ensure DOM is fully ready
+    const initTimer = setTimeout(() => {
+      try {
+        // Initialize particle system
+        const color = getParticleColor();
+        particleSystemRef.current = new ParticleSystem(containerRef.current!, color);
+        particleSystemRef.current.start();
+      } catch (error) {
+        console.error("Failed to initialize Three.js:", error);
+      }
+    }, 100);
+    
+    // Cleanup
+    return () => {
+      clearTimeout(initTimer);
+      if (particleSystemRef.current) {
+        try {
           particleSystemRef.current.dispose();
-          particleSystemRef.current = null;
+        } catch (error) {
+          console.error("Error disposing particle system:", error);
         }
-      };
-    } catch (error) {
-      console.error("Failed to initialize Three.js:", error);
-      return undefined;
-    }
+        particleSystemRef.current = null;
+      }
+    };
   }, []);
   
   // Update theme color when it changes
