@@ -12,7 +12,7 @@ import {
 import { useThemeStore } from '../../lib/theme';
 
 interface Message {
-  id: number;
+  id: string | number; // Support both string and number IDs
   text: string;
   sender: 'bot' | 'user';
   timestamp: Date;
@@ -252,12 +252,17 @@ const AIChatbot = () => {
     }
   }, [isOpen]);
 
+  // Function to generate a unique ID (more reliable than incrementing)
+  const generateUniqueId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
+  
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
-    // Add user message
+    // Add user message with unique ID
     const userMessage: Message = {
-      id: messages.length + 1,
+      id: generateUniqueId(),
       text: inputValue,
       sender: 'user',
       timestamp: new Date()
@@ -278,9 +283,9 @@ const AIChatbot = () => {
 
     // Simulate AI thinking and typing
     setTimeout(() => {
-      // Add bot response
+      // Add bot response with unique ID
       const botMessage: Message = {
-        id: messagesWithUser.length + 1,
+        id: generateUniqueId(),
         text: generateResponse(inputValue, t),
         sender: 'bot',
         timestamp: new Date()
@@ -307,9 +312,9 @@ const AIChatbot = () => {
   };
 
   const handleSuggestedQuestion = (question: string) => {
-    // Add user message with suggested question
+    // Add user message with suggested question using unique ID
     const userMessage: Message = {
-      id: messages.length + 1,
+      id: generateUniqueId(),
       text: question,
       sender: 'user',
       timestamp: new Date()
@@ -329,9 +334,9 @@ const AIChatbot = () => {
 
     // Simulate AI thinking and typing
     setTimeout(() => {
-      // Add bot response
+      // Add bot response with unique ID
       const botMessage: Message = {
-        id: messagesWithUser.length + 1,
+        id: generateUniqueId(),
         text: generateResponse(question, t),
         sender: 'bot',
         timestamp: new Date()
