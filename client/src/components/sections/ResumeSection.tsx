@@ -65,51 +65,13 @@ const ResumeSection: React.FC = () => {
           </div>
           
           <div className="w-full md:w-1/2 resume-preview">
-            <Neomorphism className="rounded-xl p-4 aspect-[3/4] relative overflow-hidden">
-              <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col space-y-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-outfit font-medium text-lg">Bhavya Darda</h4>
-                    <span className="text-sm text-primary">Full Stack Developer</span>
-                  </div>
-                  
-                  <div className="flex-1 space-y-4">
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-medium text-primary">Skills</h5>
-                      <div className="flex flex-wrap gap-2">
-                        {['React', 'TypeScript', 'Node.js', 'Python', 'AI/ML'].map((skill, index) => (
-                          <span key={index} className="px-2 py-1 text-xs bg-white/5 rounded-md">{skill}</span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-medium text-primary">Experience</h5>
-                      <div className="space-y-3">
-                        <div className="text-sm">
-                          <div className="font-medium">Senior Developer</div>
-                          <div className="text-xs opacity-70">2021 - Present</div>
-                        </div>
-                        <div className="text-sm">
-                          <div className="font-medium">Full Stack Engineer</div>
-                          <div className="text-xs opacity-70">2019 - 2021</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-medium text-primary">Education</h5>
-                      <div className="text-sm">
-                        <div className="font-medium">B.Tech in Computer Science</div>
-                        <div className="text-xs opacity-70">2015 - 2019</div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center text-sm text-primary/80">
-                    Download for full details
-                  </div>
-                </div>
+            <Neomorphism className="rounded-xl p-4 relative overflow-hidden">
+              <div className="w-full aspect-[3/4] relative">
+                <iframe
+                  src="/resume.pdf#view=FitH"
+                  className="absolute inset-0 w-full h-full rounded-lg bg-background"
+                  style={{ minHeight: '600px' }}
+                />
               </div>
             </Neomorphism>
           </div>
