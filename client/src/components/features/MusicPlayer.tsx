@@ -170,6 +170,11 @@ const MusicPlayer = () => {
       volume: muted ? 0 : volume,
       loop: true,
       preload: true,
+      onloaderror: () => {
+        console.error('Failed to load audio');
+        setMusicState(prev => ({...prev, isError: true}));
+      },
+      preload: true,
       
       // Success handlers
       onload: () => {
