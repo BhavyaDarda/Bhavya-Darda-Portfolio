@@ -116,5 +116,20 @@ export default {
     "next": "Next",
     "previous": "Previous",
     "volume": "Volume"
+  },
+  // Live Visitors
+  "visitors": {
+    "title": "Live Visitors",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "reconnect": "Reconnect",
+    "online": "online",
+    "activeUsers": "Active Visitors",
+    "noVisitors": "No other visitors at the moment",
+    "you": "You",
+    "visitor": "Visitor",
+    "ago": "ago",
+    "applyTheme": "Apply this theme",
+    "explanation": "See who's viewing the portfolio in real-time and synchronize themes for a shared experience."
   }
 };
