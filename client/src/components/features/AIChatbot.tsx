@@ -596,6 +596,7 @@ const AIChatbot = () => {
                 />
                 <button
                   onClick={handleSendMessage}
+                  title="Send message"
                   disabled={!inputValue.trim() || isTyping}
                   className={`${
                     !inputValue.trim() || isTyping ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/20'
