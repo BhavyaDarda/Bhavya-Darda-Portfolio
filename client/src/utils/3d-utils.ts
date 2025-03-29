@@ -149,7 +149,6 @@ export const createRotatingSkillRing = (scene: THREE.Scene, skills: string[]): T
   const group = new THREE.Group();
   const radius = 2;
   const textMaterial = new THREE.MeshBasicMaterial({ color: 0xd4af37 });
-  const fontLoader = new THREE.FontLoader();
   
   // Placeholder spheres while waiting for text
   skills.forEach((skill, i) => {
