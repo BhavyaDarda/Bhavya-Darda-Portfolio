@@ -1,3 +1,4 @@
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -8,9 +9,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const reqPath = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
@@ -19,16 +19,14 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (reqPath.startsWith("/api")) {
+      let logLine = `${req.method} ${reqPath} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
-
       log(logLine);
     }
   });
@@ -37,34 +35,40 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Register API routes and additional routes.
   const server = await registerRoutes(app);
 
+  // Error handler middleware.
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Setup Vite in development; serve static files in production.
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 8000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 8000;
-  server.listen({
-    port,
-    host: "127.0.0.1",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  // When running in non-serverless environments, start the server locally.
+  // When deploying on platforms like Vercel, do not call listen()—just export the app.
+  if (!process.env.VERCEL) {
+    // Use environment variables or sensible defaults.
+    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000;
+    const host = process.env.HOST || "127.0.0.1";
+    // Build listen options. Conditionally include reusePort if supported.
+    const listenOptions: { port: number; host: string; reusePort?: boolean } = { port, host };
+    if (process.platform !== "win32") {
+      listenOptions.reusePort = true;
+    }
+    server.listen(listenOptions, () => {
+      log(`serving on ${host}:${port}`);
+    });
+  }
 })();
+
+// Export the Express app for serverless environments (like Vercel).
+export default app;
