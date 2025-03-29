@@ -35,6 +35,7 @@
 
   @media (dynamic-range: high) {
     .glass {
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
       backdrop-filter: blur(16px) saturate(180%);
     }
   }

@@ -27,12 +27,12 @@ const CHAT_PATTERNS = [
 ];
 
 
-const generateResponse = (question) => {
+const generateResponse = (question: string) => {
   const currentLang = i18n.language;
 
   for (const pattern of CHAT_PATTERNS) {
     if (pattern.pattern.test(question)) {
-      const responses = pattern.responses[currentLang] || pattern.responses.en;
+      const responses = pattern.responses[currentLang as keyof typeof pattern.responses] || pattern.responses.en;
       const response = responses[Math.floor(Math.random() * responses.length)];
       return response;
     }
@@ -43,12 +43,12 @@ const generateResponse = (question) => {
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
-  const handleLanguageChange = (event) => {
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     i18n.changeLanguage(event.target.value);
   };
 
   return (
-    <select onChange={handleLanguageChange} value={i18n.language}>
+    <select title="Select language" onChange={handleLanguageChange} value={i18n.language}>
       <option value="en">English</option>
       <option value="fr">French</option>
       <option value="es">Spanish</option>
@@ -61,7 +61,7 @@ const LanguageSwitcher = () => {
 const AIChat = () => {
   const { t } = useTranslation();
   const [question, setQuestion] = useState('');
-  const [responses, setResponses] = useState([]);
+  const [responses, setResponses] = useState<{ role: string; content: string }[]>([]);
 
   const handleAsk = () => {
     const response = generateResponse(question);
@@ -73,7 +73,7 @@ const AIChat = () => {
     <div>
       <LanguageSwitcher />
       <h1>{t('chatbot.title')}</h1> {/*Example usage of translation*/}
-      <input type="text" value={question} onChange={e => setQuestion(e.target.value)} />
+      <input type="text" title="Question" placeholder="Enter your question" value={question} onChange={e => setQuestion(e.target.value)} />
       <button onClick={handleAsk}>{t('chatbot.askButton')}</button> {/*Example usage of translation*/}
       <ul>
         {responses.map((resp, index) => (
