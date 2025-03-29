@@ -89,7 +89,7 @@ const AboutSection: React.FC = () => {
             <div className="relative">
               <Glassmorphism className="rounded-2xl overflow-hidden aspect-square w-full max-w-md mx-auto">
                 <img
-                  src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
+                  src="/IMG-20240912-WA0001~2.jpg"
                   alt="Bhavya Darda"
                   className="w-full h-full object-cover opacity-90"
                 />
