@@ -88,7 +88,7 @@ The Experience section has more details about my professional journey.`,
     patterns: ['contact', 'email', 'reach', 'message', 'connect', 'hire', 'hiring', 'job'],
     response: (t) => `You can contact me through:
 
-Email: bhavya@example.com (fastest response)
+Email: dardabhavya775@gmail.com (fastest response)
 LinkedIn: linkedin.com/in/bhavyadarda
 GitHub: github.com/bhavyadarda
 Twitter: @bhavyadarda
