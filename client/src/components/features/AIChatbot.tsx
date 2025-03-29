@@ -483,6 +483,7 @@ const AIChatbot = () => {
                 </button>
                 <button 
                   onClick={() => setIsOpen(false)}
+                  title="Close Chat"
                   className="rounded-full p-2 hover:bg-white/10 transition-colors"
                 >
                   <XIcon className="h-5 w-5 text-white" />
