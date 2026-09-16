@@ -86,9 +86,8 @@ export function ShaderCanvas({
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    const context = canvas.getContext("webgl2", { premultipliedAlpha: false });
-    if (!context) return;
-    const gl: WebGL2RenderingContext = context;
+    const gl = canvas.getContext("webgl2", { premultipliedAlpha: false });
+    if (!gl) return;
 
     let disposed = false;
     let paused = false;
