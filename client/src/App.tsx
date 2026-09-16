@@ -1,103 +1,61 @@
-import { useState, useEffect, Suspense } from "react";
-import { applyTheme } from "./lib/theme";
-import { Router, Route } from "wouter";
+import { Router, Route, Switch } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/queryClient";
-import { Toaster } from "./components/ui/toaster";
-import "./i18n"; // Import i18n initialization
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { queryClient } from "@/lib/queryClient";
+import { useEffect } from "react";
+import Lenis from "lenis";
 
-// Components
-import CustomCursor from "./components/CustomCursor";
-import Loader from "./components/Loader";
-import Navbar from "./components/Navbar";
-import MobileMenu from "./components/MobileMenu";
-import ThemeSelector from "./components/ThemeSelector";
-import ParticleBackground from "./components/ParticleBackground";
-import HeroSection from "./components/sections/HeroSection";
-import AboutSection from "./components/sections/AboutSection";
-import SkillsSection from "./components/sections/SkillsSection";
-import ProjectsSection from "./components/sections/ProjectsSection";
-import ExperienceSection from "./components/sections/ExperienceSection";
-import AchievementsSection from "./components/sections/AchievementsSection";
-import ResumeSection from "./components/sections/ResumeSection";
-import ContactSection from "./components/sections/ContactSection";
-import Footer from "./components/sections/Footer";
-
-// Features
-import LanguageSwitcher from "./components/features/LanguageSwitcher";
-import AIChatbot from "./components/features/AIChatbot";
-
-
-// Pages
-import NotFound from "./pages/not-found";
-
+import Index from "@/pages/Index";
+import NotFound from "@/pages/NotFound";
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
-    // Apply default theme (gold)
-    applyTheme('gold');
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
 
-    // Disable scrolling when menu is open
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
     }
+    rafId = requestAnimationFrame(raf);
+
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest('a[href^="#"]') as HTMLAnchorElement | null;
+      if (!target) return;
+      const id = target.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      lenis.scrollTo(el, { offset: -20, duration: 1.4 });
+    };
+    document.addEventListener('click', handleAnchorClick);
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.removeEventListener('click', handleAnchorClick);
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
     };
-  }, [menuOpen]);
-
-  const handleMenuToggle = () => {
-    setMenuOpen(!menuOpen);
-  };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Suspense fallback={<div className="h-screen w-screen bg-black"></div>}>
-          {loading ? (
-            <Loader onComplete={() => setLoading(false)} />
-          ) : (
-            <div className="relative">
-              <CustomCursor />
-              <ParticleBackground />
-
-              <Navbar onMenuToggle={handleMenuToggle} />
-              <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-
-              {/* UI Controls */}
-              <div className="fixed z-40 bottom-8 right-8 flex flex-col space-y-4">
-                <ThemeSelector />
-                <LanguageSwitcher />
-              </div>
-
-              <main>
-                <Route path="/">
-                  <HeroSection />
-                  <AboutSection />
-                  <SkillsSection />
-                  <ProjectsSection />
-                  <ExperienceSection />
-                  <AchievementsSection />
-                  <ResumeSection />
-                  <ContactSection />
-                </Route>
-                <Route path="/404" component={NotFound} />
-              </main>
-
-              <Footer />
-
-              {/* Features */}
-              <AIChatbot />
-            </div>
-          )}
+      <ThemeProvider>
+        <TooltipProvider>
+          <Router>
+            <Switch>
+              <Route path="/" component={Index} />
+              <Route component={NotFound} />
+            </Switch>
+          </Router>
           <Toaster />
-        </Suspense>
-      </Router>
+          <div className="grain-overlay" aria-hidden="true" />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

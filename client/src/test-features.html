@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Features Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .test-item { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; }
+        .pass { background-color: #d4edda; border-color: #c3e6cb; }
+        .fail { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>Portfolio Website - Feature Testing Checklist</h1>
+    
+    <div class="test-section">
+        <h2>🎨 Visual & UI Features</h2>
+        <div class="test-item">
+            <strong>Responsive Design:</strong> Check mobile, tablet, and desktop layouts
+        </div>
+        <div class="test-item">
+            <strong>Theme Toggle:</strong> Switch between dark and light modes
+        </div>
+        <div class="test-item">
+            <strong>Cosmic Theme:</strong> Verify gradients, animations, and glow effects
+        </div>
+        <div class="test-item">
+            <strong>Scrollbar Hidden:</strong> Confirm no scrollbar is visible in any browser
+        </div>
+        <div class="test-item">
+            <strong>Loading States:</strong> Check form submission loading indicators
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧭 Navigation Features</h2>
+        <div class="test-item">
+            <strong>Fixed Header:</strong> Header should stay at top while scrolling
+        </div>
+        <div class="test-item">
+            <strong>Smooth Scroll:</strong> Navigation links should smoothly scroll to sections
+        </div>
+        <div class="test-item">
+            <strong>Mobile Navigation:</strong> Hamburger menu should work on mobile
+        </div>
+        <div class="test-item">
+            <strong>Floating Nav:</strong> Check if floating nav appears on scroll
+        </div>
+        <div class="test-item">
+            <strong>Vertical Nav:</strong> Side navigation should be functional
+        </div>
+        <div class="test-item">
+            <strong>Scroll Progress:</strong> Progress bar should show scroll position
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📄 Content Sections</h2>
+        <div class="test-item">
+            <strong>Hero Section:</strong> Introduction with CTA buttons and resume download
+        </div>
+        <div class="test-item">
+            <strong>About Section:</strong> Personal information display
+        </div>
+        <div class="test-item">
+            <strong>Skills Section:</strong> Technical skills showcase
+        </div>
+        <div class="test-item">
+            <strong>Timeline Section:</strong> Career/education with orbital design
+        </div>
+        <div class="test-item">
+            <strong>Projects Section:</strong> Portfolio showcase
+        </div>
+        <div class="test-item">
+            <strong>Testimonials Section:</strong> Client feedback display
+        </div>
+        <div class="test-item">
+            <strong>Services Section:</strong> Offered services information
+        </div>
+        <div class="test-item">
+            <strong>Contact Section:</strong> Contact form and information
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📧 Contact Form System</h2>
+        <div class="test-item">
+            <strong>Form Validation:</strong> Test empty fields, invalid email, short inputs
+        </div>
+        <div class="test-item">
+            <strong>Email Sending:</strong> Submit form and verify email is sent
+        </div>
+        <div class="test-item">
+            <strong>PDF Generation:</strong> Check if PDF is attached to email
+        </div>
+        <div class="test-item">
+            <strong>Success/Error Messages:</strong> Toast notifications should appear
+        </div>
+        <div class="test-item">
+            <strong>Form Reset:</strong> Form should clear after successful submission
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚡ Interactive Features</h2>
+        <div class="test-item">
+            <strong>Hover Effects:</strong> Cards and buttons should have hover animations
+        </div>
+        <div class="test-item">
+            <strong>Click Interactions:</strong> All buttons and links should be clickable
+        </div>
+        <div class="test-item">
+            <strong>Resume Download:</strong> Resume PDF should download when clicked
+        </div>
+        <div class="test-item">
+            <strong>Social Links:</strong> External links should open in new tab
+        </div>
+        <div class="test-item">
+            <strong>Contact Links:</strong> Email and phone links should work
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Technical Features</h2>
+        <div class="test-item">
+            <strong>API Endpoints:</strong> /api/contact should handle POST requests
+        </div>
+        <div class="test-item">
+            <strong>Error Handling:</strong> Server errors should be handled gracefully
+        </div>
+        <div class="test-item">
+            <strong>TypeScript:</strong> No compilation errors should exist
+        </div>
+        <div class="test-item">
+            <strong>Environment Variables:</strong> GMAIL credentials should be configured
+        </div>
+    </div>
+
+    <script>
+        // Add click handlers to mark items as tested
+        document.querySelectorAll('.test-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('pass')) {
+                    item.classList.remove('pass');
+                    item.classList.add('fail');
+                } else if (item.classList.contains('fail')) {
+                    item.classList.remove('fail');
+                } else {
+                    item.classList.add('pass');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

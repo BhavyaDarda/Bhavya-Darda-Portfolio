@@ -4,28 +4,7 @@ export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    screens: {
-      'xs': '375px',
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-      '2xl': '1536px',
-      'tall': { 'raw': '(min-height: 800px)' },
-      'retina': { 'raw': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)' },
-      'motion-safe': { 'raw': '(prefers-reduced-motion: no-preference)' },
-      'motion-reduce': { 'raw': '(prefers-reduced-motion: reduce)' },
-      'contrast-more': { 'raw': '(prefers-contrast: more)' },
-      'portrait': { 'raw': '(orientation: portrait)' },
-      'landscape': { 'raw': '(orientation: landscape)' }
-    },
     extend: {
-      fontFamily: {
-        sans: ['Outfit', 'Poppins', 'sans-serif'],
-        outfit: ['Outfit', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
-        space: ['Space Grotesk', 'sans-serif'],
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -45,7 +24,6 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          light: "hsl(var(--primary) / 0.8)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
