@@ -28,12 +28,10 @@ function MagneticLogo() {
         <img
           src={bdLogo}
           alt="BD logo"
-          className="h-9 w-9 object-contain flex-shrink-0 border-t-[0px] border-r-[0px] border-b-[0px] border-l-[0px] rounded-tl-[0px] rounded-tr-[0px] rounded-br-[0px] rounded-bl-[0px] mt-[10px] mb-[0px] ml-[0px] mr-[10px] pt-[0px] pb-[0px] pl-[0px] pr-[0px]"
+          className="h-[112px] w-[112px] object-contain flex-shrink-0"
           style={{
             mixBlendMode: 'screen',
             filter: 'brightness(7) contrast(1.1) saturate(0.35)',
-            transform: 'scale(3.3)',
-            transformOrigin: '47% 50%',
           }}
         />
       </div>

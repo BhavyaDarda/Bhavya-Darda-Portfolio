@@ -224,12 +224,10 @@ export function Footer() {
                 <img
                   src={bdLogo}
                   alt="BD"
-                  className="h-8 w-8 object-contain"
+                  className="h-[100px] w-[100px] object-contain"
                   style={{
                     mixBlendMode: 'screen',
                     filter: 'brightness(6) contrast(1.1) saturate(0.35)',
-                    transform: 'scale(3.1)',
-                    transformOrigin: '47% 50%',
                   }}
                 />
               </div>
