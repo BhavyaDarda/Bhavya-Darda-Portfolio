@@ -41,7 +41,7 @@ function pruneRateLimitEntries(): void {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.get('/healthz', (_req, res) => {
+  app.get(['/healthz', '/api/healthz'], (_req, res) => {
     res.json({ status: 'ok' });
   });
 
