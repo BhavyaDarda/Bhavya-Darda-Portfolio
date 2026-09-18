@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react'
 
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\\/[]{}—=+*^?#'
+const SCRAMBLE_INTERVAL_MS = 42
 
 interface ScrambleTextProps {
   text: string
@@ -33,7 +34,7 @@ export function ScrambleText({ text, className, as = 'span' }: ScrambleTextProps
         el.textContent = text
       }
       iteration += 1 / 2
-    }, 28)
+    }, SCRAMBLE_INTERVAL_MS)
   }, [text])
 
   const reset = useCallback(() => {
