@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { MobileNav } from './MobileNav'
 import { ScrambleText } from '@/components/ui/scramble-text'
 import { useMagnetic } from '@/hooks/use-magnetic'
-import bdLogo from '@assets/BD_(1)_1784202143032.png'
+import bdLogo from '@/assets/bd-logo'
 
 const navLinks = [
   { href: '#about',        label: 'About',        index: '01' },

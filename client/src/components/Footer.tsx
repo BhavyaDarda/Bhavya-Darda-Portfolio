@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Github, Linkedin, Mail } from 'lucide-react'
 import { gsap } from 'gsap'
 import { cn } from '@/lib/utils'
-import bdLogo from '@assets/BD_(1)_1784202143032.png'
+import bdLogo from '@/assets/bd-logo'
 
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
