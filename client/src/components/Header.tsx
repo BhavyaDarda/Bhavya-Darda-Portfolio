@@ -28,7 +28,7 @@ function MagneticLogo() {
         <img
           src={bdLogo}
           alt="BD logo"
-          className="h-[150px] w-[150px] object-contain flex-shrink-0"
+          className="h-[190px] w-[190px] object-contain flex-shrink-0"
           style={{
             mixBlendMode: 'screen',
             filter: 'brightness(7) contrast(1.1) saturate(0.35)',
